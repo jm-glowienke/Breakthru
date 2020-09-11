@@ -95,7 +95,7 @@ def game_initiate_window():
     pygame.draw.line(screen, black, (0, height / 11 * 10), (width, height / 11 * 10), 7)
     draw_status()
 
-def draw_status():
+def draw_status(): ## To BE COMPLETED
 
     global draw
 
@@ -107,4 +107,21 @@ def draw_status():
         message = "Game Draw!"
 
 
-game_initiate_window()
+def check_win(): #TO BE COMPLETED
+    return np.NaN
+
+while(True):
+    for event in pg.event.get():
+
+        if event.type == QUIT:
+            pg.quit()
+            sys.exit()
+
+        #elif event.type is MOUSEBUTTONDOWN:
+            #user_click()
+
+        #    if(winner or draw):
+            #    reset_game()
+
+    pygame.display.update()
+    CLOCK.tick(fps)
