@@ -87,11 +87,19 @@ class Board(object):
     def is_move_valid(self, src, dest):
         return True
 
-    def get_player_at_field(self,pos): # function should return which player has it's stone at position asked
-        return 'gold' # should return 'gold' or 'silver'
+    def get_player_at_field(self,pos):
+        x = self.board[pos[0]][pos[1]]
+        if x == 2 or x == 3:
+            field = 'gold'
+        elif x == 1:
+            field = 'silver'
+        elif x == '.':
+            field = 'empty'
+        else: raise Exception
+        return field
 
     def enter_manual_move(self): #function to manually enter move using keyboard
-        print("Enter source and destination in following format: <Z 99 Z 99>:")
+        print("Player {0}: It's your move! Format: <Z 99 Z 99>".format(self.turn.upper()))
         a, b, c, d = input().split()
         src = [int(b)-1,ord(a.lower())-96-1] # -1 since python indexing starts at 0
         dest = [int(d)-1,ord(c.lower())-96-1]
@@ -102,7 +110,7 @@ class Board(object):
         try:
             #validate turn
             if self.turn != self.get_player_at_field(src):
-                print("Not your stone!")
+                print("Source field is incorrect!")
                 return False
 
             # validate move
@@ -124,3 +132,6 @@ class Board(object):
             # Anything goes wrong
             print("Exception occured: ", e)
             return False
+
+    def is_terminal(self):
+        return False
