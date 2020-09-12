@@ -62,7 +62,7 @@ class Board(object):
         label_row = int(1)
         print("\n____________________________________________________")
         for element in ['A','B','C','D','E','F','G','H','I','J','K']:
-            print(element, end=' ')
+            print(element, end = ' ')
         print()
         for row in self.board:
             row.append(label_row)
@@ -84,4 +84,35 @@ class Board(object):
         return -9999999
 
     def is_move_valid(self, src, dest):
-        return -9999999
+        return True
+
+    def get_player_at_field(self,pos): # function should return which player has it's stone at position asked
+        return True
+
+    def enter_manual_move(): #function to manually enter move using keyboard
+        return src,dest # return integer lists for positions on board
+
+    def make_a_move(self,player,src,dest):
+        try:
+            #validate turn
+            if self.turn != self.get_player_at_field(src):
+                print("Not your stone!")
+                return False
+
+            # validate move
+            if move_is_valid(src,dest) != True:
+                print("Irregular move!")
+                return False
+
+            # Make move
+            self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
+            self.board[src[0]][src[1]] = '.' #reset old position
+
+            # Flip turn to other player
+            self.switch_player_at_turn()
+            return True
+
+        except Exception as e:
+            # Anything goes wrong
+            print("Exception occured: ", e)
+            return False
