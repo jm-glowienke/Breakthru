@@ -11,6 +11,7 @@ class Board(object):
         self.game_over = False
         self.total_num_playerG = 13#self.get_number_pieces(self.playerG)
         self.total_num_playerS = 20#self.get_number_pieces(self.playerS)
+        self.moves_left = 2
 
     def is_game_over(self):
         return self.game_over
@@ -62,7 +63,7 @@ class Board(object):
         label_row = int(1)
         print("\n____________________________________________________")
         for element in ['A','B','C','D','E','F','G','H','I','J','K']:
-            print(element, end = ' ')
+            print(element, end=' ')
         print()
         for row in self.board:
             row.append(label_row)
@@ -87,10 +88,15 @@ class Board(object):
         return True
 
     def get_player_at_field(self,pos): # function should return which player has it's stone at position asked
-        return True
+        return 'gold' # should return 'gold' or 'silver'
 
-    def enter_manual_move(): #function to manually enter move using keyboard
-        return src,dest # return integer lists for positions on board
+    def enter_manual_move(self): #function to manually enter move using keyboard
+        print("Enter source and destination in following format: <Z 99 Z 99>:")
+        a, b, c, d = input().split()
+        src = [int(b)-1,ord(a.lower())-96-1] # -1 since python indexing starts at 0
+        dest = [int(d)-1,ord(c.lower())-96-1]
+
+        return src, dest # return integer lists for positions on board
 
     def make_a_move(self,player,src,dest):
         try:
@@ -100,7 +106,7 @@ class Board(object):
                 return False
 
             # validate move
-            if move_is_valid(src,dest) != True:
+            if self.is_move_valid(src,dest) != True:
                 print("Irregular move!")
                 return False
 
@@ -109,6 +115,8 @@ class Board(object):
             self.board[src[0]][src[1]] = '.' #reset old position
 
             # Flip turn to other player
+            # change this because two moves in a row are possible, 1 capture or 1 for flag
+            self.moves_left -= 1
             self.switch_player_at_turn()
             return True
 
