@@ -21,41 +21,56 @@ class Board(object):
     def get_current_state(self):
         return current_state
 
+    def switch_player_at_turn(self):
+        if self.turn == self.playerG:
+            self.turn = self.playerS
+        elif self.turn == self.playerS:
+            self.turn == self.playerG
+        else: raise Exception("Player not existent")
+
+        return self.turn
+
+
     def get_remaining_pieces(self,player): # is this really needed?
         difference = -99
 
-        if player == playerG:
+        if player == self.playerG:
             diff = self.total_num_playerG - self.get_number_pieces(player)
-        else:
+        elif player == self.playerS:
             diff = self.total_num_playerS - self.get_number_pieces(player)
+        else: raise Exception("Player not existent")
 
         return
 
     def get_number_pieces(self,player):
         counter = 0
-        if player == 'gold':
+        if player == self.playerG:
             for row in self.board:
                 for column in row:
                     if column == 2 or column == 3:
                         counter += 1
-        else:
+        elif player == self.playerS:
             for row in self.board:
                 for column in row:
                     if column == 1:
                         counter += 1
+        else: raise Exception("Player not existent")
 
         return counter
 
     def show_state(self):
-        col = 1
-        print("\n######################################################\n")
+        label_row = int(1)
+        print("\n____________________________________________________")
+        for element in ['A','B','C','D','E','F','G','H','I','J','K']:
+            print(element, end=' ')
+        print()
         for row in self.board:
+            row.append(label_row)
             for column in row:
-                #column = [column].append([col])
-                print(column, end = '')
-                col += 1
+                print(column, end = ' ')
             print()
-        print("######################################################\n")
+            label_row += 1
+        print("____________________________________________________\n")
         return
 
     def get_all_positions(self,player):
