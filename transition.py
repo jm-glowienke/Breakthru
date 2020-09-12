@@ -9,8 +9,8 @@ class Board(object):
         self.playerS = 'silver'
         self.turn = turn
         self.game_over = False
-        self.total_num_playerG = self.get_number_pieces(self.playerG)
-        self.total_num_playerS = self.get_number_pieces(self.playerS)
+        self.total_num_playerG = 13#self.get_number_pieces(self.playerG)
+        self.total_num_playerS = 20#self.get_number_pieces(self.playerS)
 
     def is_game_over(self):
         return self.game_over
@@ -31,24 +31,24 @@ class Board(object):
         return self.turn
 
 
-    def get_remaining_pieces(self,player): # is this really needed?
-        difference = -99
+    def get_remaining_pieces(self,player):
+        difference = None
 
         if player == self.playerG:
-            diff = self.total_num_playerG - self.get_number_pieces(player)
+            difference = self.total_num_playerG - self.get_number_pieces(player)
         elif player == self.playerS:
-            diff = self.total_num_playerS - self.get_number_pieces(player)
+            difference = self.total_num_playerS - self.get_number_pieces(player)
         else: raise Exception("Player not existent")
 
-        return
+        return difference
 
     def get_number_pieces(self,player):
         counter = 0
         if player == self.playerG:
             for row in self.board:
-                for column in row:
-                    if column == 2 or column == 3:
-                        counter += 1
+               for column in row:
+                   if column == 2 or column == 3:
+                       counter += 1
         elif player == self.playerS:
             for row in self.board:
                 for column in row:
@@ -70,8 +70,9 @@ class Board(object):
                 print(column, end = ' ')
             print()
             label_row += 1
+            del row[-1]
         print("____________________________________________________\n")
-        return
+        return None
 
     def get_all_positions(self,player):
         return -9999999
