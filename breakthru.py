@@ -2,6 +2,7 @@
 ## Store moves
 ## Time stamps
 ## skip first move for gold
+## not move same ship twice should be implemented
 
 from transition import Board
 from tools import initial_state
