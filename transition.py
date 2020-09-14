@@ -8,6 +8,7 @@ class Board(object):
         self.playerG = 'gold'
         self.playerS = 'silver'
         self.turn = turn
+        self.opponent = 'silver'
         self.game_over = False
         self.total_num_playerG = 13#self.get_number_pieces(self.playerG)
         self.total_num_playerS = 20#self.get_number_pieces(self.playerS)
@@ -24,14 +25,20 @@ class Board(object):
     def get_current_state(self):
         return current_state
 
+    def get_moves_left(self):
+        return self.moves_left
+
     def switch_player_at_turn(self):
         if self.turn == self.playerG:
             self.turn = self.playerS
+            self.opponent = self.playerG
+            self.moves_left = 2
         elif self.turn == self.playerS:
             self.turn == self.playerG
+            self.opponent = self.playerS
+            self.moves_left = 2
         else: raise Exception("Player not existent")
-
-        return self.turn
+        return
 
 
     def get_remaining_pieces(self,player):
@@ -87,9 +94,54 @@ class Board(object):
         return -9999999
 
     def is_move_valid(self, src, dest):
-        
+        # returns whether move is valid adn adapts variable self.moves_left
+        type = -99 # 10 = normal, 11 = capture, 12 = flagship
+        # Check for basic incorrects
+        if src[0] == dest[0] and dest[0] == dest[1]:
+            Print("src == dest")
+            return False
+        elif self.get_player_af_field(dest) == self.turn:
+            Print("destination field has own stone")
+            return False
 
-        return True
+        # Determine type of move, check if enough moves left, adapt moves left
+        if self.get_player_af_field(dest) == self.opponent and self.moves_left < 2:
+            return False
+        elif self.get_player_af_field(dest) == self.opponent:
+            type = 11
+            self.moves_left -= 2
+        elif self.board[src[0]][pos[1]] == 3 and self.moves_left < 2:
+            return False
+        elif self.board[src[0]][pos[1]] == 3:
+            type = 12
+            self.moves_left -= 2
+        elif self.get_player_af_field(dest) == 'empty':
+            type = 10
+            self.moves_left -= 1
+
+        # Check if move is valid
+        if type == 11: # check for capture move
+            if abs(src[0] - dest[0]) == 1 and abs(src[1] == dest[1]) == 1:
+                return True
+            else:
+                return False
+        elif type == 10: # check for regular move
+            if src[0] == dest[0]: # horizontal move
+                for x in self.board[src[0]]:
+                    if x != '.':
+                        return False
+                return True
+            elif src[1] == dest[1]: # vertical move
+                return True
+            else:
+                return False
+
+
+
+
+
+
+        return False
 
     def get_player_at_field(self,pos):
         x = self.board[pos[0]][pos[1]]
@@ -137,8 +189,8 @@ class Board(object):
 
             # Flip turn to other player
             # change this because two moves in a row are possible, 1 capture or 1 for flag
-            self.moves_left -= 1
-            self.switch_player_at_turn()
+            if self.moves_left < 1:
+                self.switch_player_at_turn()
             return True
 
         except Exception as e:
