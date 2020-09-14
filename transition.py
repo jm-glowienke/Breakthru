@@ -12,6 +12,8 @@ class Board(object):
         self.total_num_playerG = 13#self.get_number_pieces(self.playerG)
         self.total_num_playerS = 20#self.get_number_pieces(self.playerS)
         self.moves_left = 2
+        self.height = 11
+        self.width = 11
 
     def is_game_over(self):
         return self.game_over
@@ -85,6 +87,8 @@ class Board(object):
         return -9999999
 
     def is_move_valid(self, src, dest):
+        
+
         return True
 
     def get_player_at_field(self,pos):
@@ -95,20 +99,29 @@ class Board(object):
             field = 'silver'
         elif x == '.':
             field = 'empty'
-        else: raise Exception
+        else:
+            raise Exception
         return field
 
     def enter_manual_move(self): #function to manually enter move using keyboard
-        print("Player {0}: It's your move! Format: <Z 99 Z 99>".format(self.turn.upper()))
-        a, b, c, d = input().split()
-        src = [int(b)-1,ord(a.lower())-96-1] # -1 since python indexing starts at 0
-        dest = [int(d)-1,ord(c.lower())-96-1]
-
+        while True:
+            try:
+                print("Player {0}: It's your move! Format: <Z 99 Z 99>".format(self.turn.upper()))
+                a, b, c, d = input().split()
+                src = [ord(a.lower())-96-1,int(b)-1] # -1 since python indexing starts at 0
+                dest = [ord(c.lower())-96-1,int(d)-1]
+                print(src,dest)
+                if src[0] < 0 or src[0] > self.width - 1 or src[1] < 0 or src[1] > self.height - 1\
+                or dest[0] < 0 or dest[0] > self.width - 1 or dest[1] < 0 or dest[1] > self.height - 1:
+                    raise ValueError
+                break
+            except ValueError:
+                print("Invalid input! Try again and remember expected input format: <Z 99 Z 99>!")
         return src, dest # return integer lists for positions on board
 
     def make_a_move(self,player,src,dest):
         try:
-            #validate turn
+            #validate turn - check if correct stone at starting field
             if self.turn != self.get_player_at_field(src):
                 print("Source field is incorrect!")
                 return False
