@@ -178,3 +178,5 @@ geckodriver.log
 .jpg
 
 logs/
+
+test.py

@@ -37,4 +37,4 @@ while board.is_terminal() != True:
     except ValueError:
         print("Try again:")
 
-print("Player {0} wins the game!".format(board.get_winner())
+print("Player {0} wins the game!".format(board.get_winner()))
