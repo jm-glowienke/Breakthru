@@ -33,13 +33,14 @@ class Board(object):
             self.turn = self.playerS
             self.opponent = self.playerG
             self.moves_left = 2
+            print("gold switch")
         elif self.turn == self.playerS:
-            self.turn == self.playerG
+            print("SIlver switch")
+            self.turn = self.playerG
             self.opponent = self.playerS
             self.moves_left = 2
         else: raise Exception("Player not existent")
         return
-
 
     def get_remaining_pieces(self,player):
         difference = None
@@ -99,10 +100,10 @@ class Board(object):
         old_moves_left = self.moves_left
         # Check for basic incorrects
         if src[0] == dest[0] and src[1] == dest[1]: # Eliminate when source equals destination
-            Print("src == dest")
+            print("src == dest")
             return False
         elif self.get_player_at_field(dest) == self.turn:
-            Print("destination field has own stone")
+            print("destination field has own stone")
             return False
 
         # Determine type of move, check if enough moves left, adapt moves left
@@ -132,9 +133,10 @@ class Board(object):
 
         # Check if move is valid
         if type == 11: # check for capture move
-            if abs(src[0] - dest[0]) == 1 and abs(src[1] == dest[1]) == 1:
+            if abs(src[0] - dest[0]) == 1 and abs(src[1] - dest[1]) == 1:
                 return True
             else:
+                print("Illegal capture move")
                 self.moves_left = old_moves_left
                 return False
         elif type == 10: # check for regular move
@@ -160,6 +162,7 @@ class Board(object):
             raise Exception
 
         self.moves_left = old_moves_left
+        print("Move validation went completely wrong")
         return False
 
     def get_player_at_field(self,pos):

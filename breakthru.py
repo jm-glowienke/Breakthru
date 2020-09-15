@@ -15,11 +15,10 @@ board = Board(board_list)
 board.show_state()
 
 while board.is_terminal != True:
-    while True:
-        try:
-            src, dest = board.enter_manual_move()
-            if board.make_a_move(board.get_turn(),src, dest) == False:
-                raise ValueError
-            board.show_state()
-        except ValueError:
-            print("Try again:")
+    try:
+        src, dest = board.enter_manual_move()
+        if board.make_a_move(board.get_turn(),src, dest) == False:
+            raise ValueError
+        board.show_state()
+    except ValueError:
+        print("Try again:")
