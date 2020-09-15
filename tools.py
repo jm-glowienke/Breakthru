@@ -1,3 +1,5 @@
+import json
+
 def initial_state():
     # define initial start board: silver = 1, gold = 2, flagship = 3
         board_initial = [
@@ -13,3 +15,11 @@ def initial_state():
         [".",".",".",1,1,1,1,1,".",".","."],
         [".",".",".",".",".",".",".",".",".",".","."]]
         return board_initial
+
+def save_game_log(history):
+    with open('logs\test.txt', 'w') as f:
+        f.write(json.dumps(a))
+    return
+
+a = [[1,2,3],[4,5,6]]
+save_game_log(a)

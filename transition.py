@@ -17,9 +17,13 @@ class Board(object):
         self.height = 11
         self.width = 11
         self.last_dest = [99,99]
+        self.history = []
 
     def is_game_over(self):
         return self.game_over
+
+    def get_winner():
+        return self.winner
 
     def get_turn(self):
         return self.turn
@@ -211,6 +215,10 @@ class Board(object):
             self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
             self.board[src[0]][src[1]] = '.' #reset old position\
             self.last_dest = dest # save last destination
+
+
+            # save moves to history
+            self.history.append([src,dest])
 
             # Flip turn to other player
             # change this because two moves in a row are possible, 1 capture or 1 for flag

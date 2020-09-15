@@ -176,3 +176,5 @@ geckodriver.log
 
 .pdf
 .jpg
+
+logs/
