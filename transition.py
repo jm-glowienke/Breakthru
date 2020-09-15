@@ -96,24 +96,26 @@ class Board(object):
     def is_move_valid(self, src, dest):
         # returns whether move is valid adn adapts variable self.moves_left
         type = -99 # 10 = normal, 11 = capture
+        old_moves_left = self.moves_left
         # Check for basic incorrects
-        if src[0] == dest[0] and src[1] == dest[1]:
+        if src[0] == dest[0] and src[1] == dest[1]: # Eliminate when source equals destination
             Print("src == dest")
             return False
         elif self.get_player_at_field(dest) == self.turn:
             Print("destination field has own stone")
             return False
-        # else:
-        #     print("Basic valid checks went wrong")
-        #     raise Exception
 
         # Determine type of move, check if enough moves left, adapt moves left
         if self.get_player_at_field(dest) == self.opponent and self.moves_left < 2:
+            self.moves_left = old_moves_left
+            print("2nd move cannot be a capture")
             return False
         elif self.get_player_at_field(dest) == self.opponent:
             type = 11
             self.moves_left -= 2
         elif self.board[src[0]][src[1]] == 3 and self.moves_left < 2:
+            print("2nd move cannot move the flagship")
+            self.moves_left = old_moves_left
             return False
         elif self.board[src[0]][src[1]] == 3 and self.get_player_at_field(dest) == self.opponent:
             type = 11
@@ -133,24 +135,31 @@ class Board(object):
             if abs(src[0] - dest[0]) == 1 and abs(src[1] == dest[1]) == 1:
                 return True
             else:
+                self.moves_left = old_moves_left
                 return False
         elif type == 10: # check for regular move
-            if src[0] == dest[0]: # vertical move
-                for i in range(min(src[1],dest[1]),max(src[1],dest[1])):
+            if src[0] == dest[0]: # horizontal move
+                for i in range(min(src[1],dest[1])+1,max(src[1],dest[1])):
                     if self.board[src[0]][i] != '.':
+                        print("Cannot jump over stones!")
+                        self.moves_left = old_moves_left
                         return False
                 return True
-            elif src[1] == dest[1]: # horizontal move
-                for i in range(min(src[0],dest[0]),max(src[0],dest[0])):
+            elif src[1] == dest[1]: # vertical move
+                for i in range(min(src[0],dest[0])+1,max(src[0],dest[0])):
                     if self.board[i][src[1]] != '.':
+                        print("Cannot jump over stones!")
+                        self.moves_left = old_moves_left
                         return False
                 return True
             else:
-                return False
+                print("Regular move went wrong")
+                raise Exception
         else:
             print("Type not correctly defined")
             raise Exception
 
+        self.moves_left = old_moves_left
         return False
 
     def get_player_at_field(self,pos):
@@ -172,7 +181,6 @@ class Board(object):
                 a, b, c, d = input().split()
                 src = [int(b)-1, ord(a.lower())-96-1] # -1 since python indexing starts at 0
                 dest = [int(d)-1, ord(c.lower())-96-1]
-                print(src,dest)
                 if src[0] < 0 or src[0] > self.width - 1 or src[1] < 0 or src[1] > self.height - 1\
                 or dest[0] < 0 or dest[0] > self.width - 1 or dest[1] < 0 or dest[1] > self.height - 1:
                     raise ValueError
