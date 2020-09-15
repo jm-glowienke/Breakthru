@@ -17,6 +17,7 @@ def initial_state():
         [".",".",".",".",".",".",".",".",".",".","."]]
         return board_initial
 
+# create subdirectory
 def save_game_log(history):
     with open('./logs/log_'+time.strftime("%Y%m%d-%H%M%S"), 'w') as f:
         for item in history:
