@@ -16,6 +16,7 @@ class Board(object):
         self.moves_left = 2
         self.height = 11
         self.width = 11
+        self.last_dest = [99,99]
 
     def is_game_over(self):
         return self.game_over
@@ -34,9 +35,7 @@ class Board(object):
             self.turn = self.playerS
             self.opponent = self.playerG
             self.moves_left = 2
-            print("gold switch")
         elif self.turn == self.playerS:
-            print("SIlver switch")
             self.turn = self.playerG
             self.opponent = self.playerS
             self.moves_left = 2
@@ -101,10 +100,13 @@ class Board(object):
         old_moves_left = self.moves_left
         # Check for basic incorrects
         if src[0] == dest[0] and src[1] == dest[1]: # Eliminate when source equals destination
-            print("src == dest")
+            print("source == destination")
             return False
         elif self.get_player_at_field(dest) == self.turn:
             print("destination field has own stone")
+            return False
+        elif self.moves_left == 1 and src == self.last_dest:
+            print("same ship cannot move twice")
             return False
 
         # Determine type of move, check if enough moves left, adapt moves left
@@ -207,7 +209,8 @@ class Board(object):
 
             # Make move
             self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
-            self.board[src[0]][src[1]] = '.' #reset old position
+            self.board[src[0]][src[1]] = '.' #reset old position\
+            self.last_dest = dest # save last destination
 
             # Flip turn to other player
             # change this because two moves in a row are possible, 1 capture or 1 for flag
@@ -224,7 +227,6 @@ class Board(object):
         k = 0
         for row in self.board:
             if 3 in row:
-                print(row.index(3))
                 if row.index(3) == 0 or row.index(3) == 10 \
                 or k == 0 or k == 10:
                     self.winner = self.playerG

@@ -1,16 +1,30 @@
 ## # TODO:
 ## Store moves
 ## Time stamps
-## skip first move for gold
-## not move same ship twice should be implemented
-## problem with stone check
+## loading of old game
+## choice possibility which player engine has to play
 
 from transition import Board
 from tools import initial_state
+import os
 
-board_list = initial_state()
+# Initialization
+os.system('clear')
+board = Board(initial_state())
 
-board = Board(board_list)
+
+# Game starts
+print("Welcome to Breakthru! \n Press 1 for new game and 2 to continue old game:")
+choice = int(input())
+if choice == 1:
+    print("Player GOLD: Do you want to skip your first move? [y/n]")
+    skip = input()
+    if skip.lower() == 'y':
+        board.switch_player_at_turn()
+elif choice == 2:
+    # load game and play to correct screen
+    print("Loading")
+else: raise Exception
 
 board.show_state()
 
