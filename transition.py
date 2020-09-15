@@ -10,6 +10,7 @@ class Board(object):
         self.turn = turn
         self.opponent = 'silver'
         self.game_over = False
+        self.winner = None
         self.total_num_playerG = 13#self.get_number_pieces(self.playerG)
         self.total_num_playerS = 20#self.get_number_pieces(self.playerS)
         self.moves_left = 2
@@ -156,7 +157,7 @@ class Board(object):
                 return True
             else:
                 print("Regular move went wrong")
-                raise Exception
+                return False
         else:
             print("Type not correctly defined")
             raise Exception
@@ -220,4 +221,17 @@ class Board(object):
             return False
 
     def is_terminal(self):
-        return False
+        k = 0
+        for row in self.board:
+            if 3 in row:
+                print(row.index(3))
+                if row.index(3) == 0 or row.index(3) == 10 \
+                or k == 0 or k == 10:
+                    self.winner = self.playerG
+                    return True # flagship found on edges of board
+                else:
+                    return False # no terminal state --> continue
+            k += 1
+        # no 3 found on board = silver wins
+        self.winner = self.playerS
+        return True

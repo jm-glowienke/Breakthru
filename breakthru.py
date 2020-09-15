@@ -14,7 +14,7 @@ board = Board(board_list)
 
 board.show_state()
 
-while board.is_terminal != True:
+while board.is_terminal() != True:
     try:
         src, dest = board.enter_manual_move()
         if board.make_a_move(board.get_turn(),src, dest) == False:
