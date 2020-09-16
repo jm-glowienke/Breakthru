@@ -227,7 +227,7 @@ class Board(object):
 
             # Make move
             self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
-            self.board[src[0]][src[1]] = '.' #reset old position\
+            self.board[src[0]][src[1]] = '.' #reset old position
             self.last_dest = dest # save last destination
 
 
@@ -259,3 +259,56 @@ class Board(object):
         # no 3 found on board = silver wins
         self.winner = self.playerS
         return True
+
+    def undo_last_move(self):
+        src = self.history[-1][1] # opposite direction
+        dest = self.history[-1][0]
+        del self.history[-1]
+        self.winner = None
+
+        if self.moves_left == 1:
+            self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
+            self.board[src[0]][src[1]] = '.' #reset old position
+            self.moves_left += 1
+            return True
+        elif self.moves_left == 2:
+            self.switch_player_at_turn()
+            if self.turn == self.playerG :
+                if self.board[src[0]][src[1]] == 3: # flag ship moved
+                    if abs(src[0]-dest[0]) == 1 and abs(src[1]-dest[1]) == 1: # capture
+                        self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
+                        self.board[src[0]][src[1]] = 1 #reset old position
+                        return True
+                    elif src[0] == dest[0] or src[1] == dest[1]: # regular
+                        self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
+                        self.board[src[0]][src[1]] = '.' #reset old position
+                        return True
+                elif self.board[src[0]][src[1]] == 2: # escort moved
+                    if abs(src[0]-dest[0]) == 1 or abs(src[1]-dest[1]) == 1: # capture
+                        self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
+                        self.board[src[0]][src[1]] = 1 #reset old position
+                        self.moves_left = 2
+                        return True
+                    elif src[0] == dest[0] and src[1] == dest[1]: # regular
+                        self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
+                        self.board[src[0]][src[1]] = '.' #reset old position
+                        self.moves_left = 1
+                        return True
+                    else: return False
+                else: return False
+            elif self.turn == self.playerS:
+                 if abs(src[0]-dest[0]) == 1 and abs(src[1]-dest[1]) == 1: # capture
+                     self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
+                     for row in self.board:
+                         if 3 in row: # flagship was captured
+                            self.board[src[0]][src[1]] = 2
+                            return True
+                     self.board[src[0]][src[1]] =  3
+                        #reset old position
+                     return True
+                 elif src[0] == dest[0] or src[1] == dest[1]: # regular
+                     self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
+                     self.board[src[0]][src[1]] = '.' #reset old position
+                     return True
+                 else: return False
+        else:   return False
