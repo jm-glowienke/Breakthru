@@ -33,6 +33,7 @@ elif choice == 2:
             if log[0][0][0] == 99:
                 print("Gold skipped first move")
                 board.switch_player_at_turn()
+                board.gold_skips()
                 del log[0]
             board.show_state()
             for i in range(0,len(log)):
