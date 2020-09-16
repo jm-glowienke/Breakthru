@@ -38,7 +38,7 @@ def read_game_log(filename):
         next(filehandle)
         for line in filehandle: #skip first two lines
             # remove linebreak which is the last character of the string
-            current = line[:-1].replace(' ','')
+            current = line[:-1].split()
             #print(current)
             save = []
             for item in current:

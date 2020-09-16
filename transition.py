@@ -28,6 +28,10 @@ class Board(object):
     def get_history(self):
         return self.history
 
+    def gold_skips(self):
+        self.history.append([[99,0],[0,0]])
+        return
+
     def add_to_history(self,old_history): # probably not needed
         n = len(old_history)
         for i in range(0,n):

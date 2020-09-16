@@ -21,6 +21,7 @@ if choice == 1:
     print("Player GOLD: Do you want to skip your first move? [y/n]")
     skip = input()
     if skip.lower() == 'y':
+        board.gold_skips()
         board.switch_player_at_turn()
     board.show_state()
 elif choice == 2:
@@ -29,8 +30,11 @@ elif choice == 2:
             print("Enter the name of the file you want to load:")
             file = input()
             log = tools.read_game_log(file)
+            if log[0][0][0] == 99:
+                print("Gold skipped first move")
+                board.switch_player_at_turn()
+                del log[0]
             board.show_state()
-            print(log)
             for i in range(0,len(log)):
                 turn = board.get_turn()
                 print("Player {} moves".format(turn.upper()))
