@@ -5,12 +5,13 @@
 ## choice possibility which player engine has to play
 
 from transition import Board
-from tools import initial_state
+import tools
 import os
+import time
 
 # Initialization
 os.system('clear')
-board = Board(initial_state())
+board = Board(tools.initial_state())
 
 
 # Game starts
@@ -21,20 +22,43 @@ if choice == 1:
     skip = input()
     if skip.lower() == 'y':
         board.switch_player_at_turn()
+    board.show_state()
 elif choice == 2:
-    # load game and play to correct screen
-    print("Loading")
+    while True:
+        try:
+            print("Enter the name of the file you want to load:")
+            file = input()
+            log = tools.read_game_log(file)
+            board.show_state()
+            print(log)
+            for i in range(0,len(log)):
+                turn = board.get_turn()
+                print("Player {} moves".format(turn.upper()))
+                board.make_a_move(board.get_turn(),log[i][0],log[i][1])
+                board.show_state()
+            print("\n Continuing old game...")
+            break
+        except FileNotFoundError:
+            print("\n File or 'logs' folder not found!")
 else: raise Exception
 
-board.show_state()
+# board.show_state()
 
-while board.is_terminal() != True:
-    try:
-        src, dest = board.enter_manual_move()
-        if board.make_a_move(board.get_turn(),src, dest) == False:
-            raise ValueError
-        board.show_state()
-    except ValueError:
-        print("Try again:")
-
-print("Player {0} wins the game!".format(board.get_winner()))
+# Here the real game play is happening:
+try:
+    while board.is_terminal() != True:
+        try:
+            src, dest = board.enter_manual_move()
+            if board.make_a_move(board.get_turn(),src, dest) == False:
+                raise ValueError
+            board.show_state()
+        except ValueError:
+            print("Try again:")
+    tools.save_game_log(board.get_history())
+    print("Player {0} wins the game!".format(board.get_winner()))
+except KeyboardInterrupt:
+    tools.save_game_log(board.get_history())
+    print("\n Game interrupted! Log is saved!")
+except: #any unexpected error occurs during game play
+    tools.save_game_log(board.get_history())
+    print("\n An error occurred! Log is saved!")

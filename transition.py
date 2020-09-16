@@ -22,8 +22,17 @@ class Board(object):
     def is_game_over(self):
         return self.game_over
 
-    def get_winner():
-        return self.winner
+    def get_winner(self):
+        return self.winner.upper()
+
+    def get_history(self):
+        return self.history
+
+    def add_to_history(self,old_history): # probably not needed
+        n = len(old_history)
+        for i in range(0,n):
+            self.history.append(old_history[i])
+        return
 
     def get_turn(self):
         return self.turn
@@ -193,11 +202,12 @@ class Board(object):
                 dest = [int(d)-1, ord(c.lower())-96-1]
                 if src[0] < 0 or src[0] > self.width - 1 or src[1] < 0 or src[1] > self.height - 1\
                 or dest[0] < 0 or dest[0] > self.width - 1 or dest[1] < 0 or dest[1] > self.height - 1:
-                    raise ValueError
+                    raise IndexError
                 break
-            except ValueError:
+            except IndexError:
                 print("Invalid input! Try again and remember expected input format: <Z 99 Z 99>!")
-        return src, dest # return integer lists for positions on board
+        # return integer lists for positions on board
+        return src, dest
 
     def make_a_move(self,player,src,dest):
         try:
