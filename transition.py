@@ -339,9 +339,6 @@ class Board(object):
             elif self.turn == self.playerS:
                 self.elapsed_timeS += elapsed_time
                 self.history[-1].append(int(elapsed_time))
-            print(self.history)
-            print("Silver:%s " % self.elapsed_timeS)
-            print("Gold:%s " % self.elapsed_timeG)
             return
         else:
             if self.turn == self.playerG:
@@ -352,10 +349,6 @@ class Board(object):
                 elapsed_time = self.end_time - start_time
                 self.elapsed_timeS += elapsed_time
                 self.history[-1].append(int(elapsed_time))
-        print(elapsed_time)
-        print(self.history)
-        print("Silver:%s " % self.elapsed_timeS)
-        print("Gold:%s " % self.elapsed_timeG)
         return
 
     def get_time_left(self):
