@@ -6,8 +6,8 @@ board_list = initial_state()
 
 board = Board(board_list)
 
-# board.show_state()
+import signal
 
-a = [[[1, 5], [0, 5]], [[9, 5], [10, 5]]]
+valid_signals = signal.valid_signals()
 
-print(a[0][1])
+print(valid_signals)

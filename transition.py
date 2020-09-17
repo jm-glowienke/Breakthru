@@ -200,8 +200,11 @@ class Board(object):
     def enter_manual_move(self): #function to manually enter move using keyboard
         while True:
             try:
-                print("Player {0}: It's your move! Format: <Z 99 Z 99>".format(self.turn.upper()))
+                print("Player {0}: It's your move! Format: <Z 99 Z 99>".format(self.turn.upper())\
+                + "\n <-1 0 0 0> to undo last move")
                 a, b, c, d = input().split()
+                if a == '-1':
+                    return None,None
                 src = [int(b)-1, ord(a.lower())-96-1] # -1 since python indexing starts at 0
                 dest = [int(d)-1, ord(c.lower())-96-1]
                 if src[0] < 0 or src[0] > self.width - 1 or src[1] < 0 or src[1] > self.height - 1\
@@ -300,7 +303,7 @@ class Board(object):
                  if abs(src[0]-dest[0]) == 1 and abs(src[1]-dest[1]) == 1: # capture
                      self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
                      for row in self.board:
-                         if 3 in row: # flagship was captured
+                         if 3 in row: # flagship was not captured
                             self.board[src[0]][src[1]] = 2
                             return True
                      self.board[src[0]][src[1]] =  3

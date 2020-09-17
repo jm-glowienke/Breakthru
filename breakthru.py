@@ -54,11 +54,18 @@ try:
     while board.is_terminal() != True:
         try:
             src, dest = board.enter_manual_move()
+            if src == None:
+                print("Undoing last move...")
+                if board.undo_last_move() == False:
+                    print("Undoing failed!")
+                    raise Exception
+                board.show_state()
+                raise ValueError
             if board.make_a_move(board.get_turn(),src, dest) == False:
                 raise ValueError
             board.show_state()
         except ValueError:
-            print("Try again:")
+            print("Try again")
     tools.save_game_log(board.get_history())
     print("Player {0} wins the game!".format(board.get_winner()))
 except KeyboardInterrupt:
