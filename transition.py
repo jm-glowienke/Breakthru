@@ -1,5 +1,5 @@
 # Everything needed to make transitions
-
+import time
 
 class Board(object):
 
@@ -18,6 +18,9 @@ class Board(object):
         self.width = 11
         self.last_dest = [99,99]
         self.history = []
+        self.elapsed_timeG = 0
+        self.elapsed_timeS = 0
+        self.end_time = 0
 
     def is_game_over(self):
         return self.game_over
@@ -29,7 +32,7 @@ class Board(object):
         return self.history
 
     def gold_skips(self):
-        self.history.append([[99,0],[0,0]])
+        self.history.append([[99,0],[0,0],0])
         return
 
     def add_to_history(self,old_history): # probably not needed
@@ -216,7 +219,7 @@ class Board(object):
         # return integer lists for positions on board
         return src, dest
 
-    def make_a_move(self,player,src,dest):
+    def make_a_move(self,player,src,dest,start_time,elapsed_time = 0):
         try:
             #validate turn - check if correct stone at starting field
             if self.turn != self.get_player_at_field(src):
@@ -228,6 +231,7 @@ class Board(object):
                 print("Irregular move!")
                 return False
 
+            self.end_time = time.time()
             # Make move
             self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
             self.board[src[0]][src[1]] = '.' #reset old position
@@ -236,6 +240,8 @@ class Board(object):
 
             # save moves to history
             self.history.append([src,dest])
+
+            self.tracking_time(start_time,elapsed_time)
 
             # Flip turn to other player
             # change this because two moves in a row are possible, 1 capture or 1 for flag
@@ -266,9 +272,18 @@ class Board(object):
     def undo_last_move(self):
         src = self.history[-1][1] # opposite direction
         dest = self.history[-1][0]
+        elapsed_time = self.history[-1][2]
         del self.history[-1]
         self.winner = None
 
+        # reset total elapsed time per player
+        if self.turn == self.playerG:
+            self.elapsed_timeG -= int(elapsed_time)
+
+        elif self.turn == self.playerS:
+            self.elapsed_timeS -= int(elapsed_time)
+        print("Silver:%s " % self.elapsed_timeS)
+        print("Gold:%s " % self.elapsed_timeG)
         if self.moves_left == 1:
             self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
             self.board[src[0]][src[1]] = '.' #reset old position
@@ -315,3 +330,36 @@ class Board(object):
                      return True
                  else: return False
         else:   return False
+
+    def tracking_time(self,start_time,elapsed_time = 0):
+        if elapsed_time != 0: # possibility to edit time for loading of game
+            if self.turn == self.playerG:
+                self.elapsed_timeG += int(elapsed_time)
+                self.history[-1].append(int(elapsed_time))
+            elif self.turn == self.playerS:
+                self.elapsed_timeS += elapsed_time
+                self.history[-1].append(int(elapsed_time))
+            print(self.history)
+            print("Silver:%s " % self.elapsed_timeS)
+            print("Gold:%s " % self.elapsed_timeG)
+            return
+        else:
+            if self.turn == self.playerG:
+                elapsed_time = self.end_time - start_time
+                self.elapsed_timeG += elapsed_time
+                self.history[-1].append(int(elapsed_time))
+            elif self.turn == self.playerS:
+                elapsed_time = self.end_time - start_time
+                self.elapsed_timeS += elapsed_time
+                self.history[-1].append(int(elapsed_time))
+        print(elapsed_time)
+        print(self.history)
+        print("Silver:%s " % self.elapsed_timeS)
+        print("Gold:%s " % self.elapsed_timeG)
+        return
+
+    def get_time_left(self):
+        if self.get_turn() == self.playerG:
+            return 600 - self.elapsed_timeG
+        else:
+            return 600 - self.elapsed_timeS

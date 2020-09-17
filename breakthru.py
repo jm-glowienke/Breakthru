@@ -39,7 +39,7 @@ elif choice == 2:
             for i in range(0,len(log)):
                 turn = board.get_turn()
                 print("Player {} moves".format(turn.upper()))
-                board.make_a_move(board.get_turn(),log[i][0],log[i][1])
+                board.make_a_move(board.get_turn(),log[i][0],log[i][1],0,elapsed_time = log[i][2])
                 board.show_state()
             print("\n Continuing old game...")
             break
@@ -47,12 +47,11 @@ elif choice == 2:
             print("\n File or 'logs' folder not found!")
 else: raise Exception
 
-# board.show_state()
-
 # Here the real game play is happening:
 try:
     while board.is_terminal() != True:
         try:
+            start_time = time.time()
             src, dest = board.enter_manual_move()
             if src == None:
                 print("Undoing last move...")
@@ -61,7 +60,7 @@ try:
                     raise Exception
                 board.show_state()
                 raise ValueError
-            if board.make_a_move(board.get_turn(),src, dest) == False:
+            if board.make_a_move(board.get_turn(),src, dest,start_time) == False:
                 raise ValueError
             board.show_state()
         except ValueError:
