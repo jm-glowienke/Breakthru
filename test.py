@@ -1,13 +1,26 @@
 from transition import Board
 from tools import initial_state
 
-board_list = initial_state()
+# board_list = initial_state()
 
+test_1 =    [
+            [1,".",".",".",".",".",".",".",".",".","."],
+            [".",2,".",".",".",".",".",".",".",".","."],
+            [".",".",".",".",".",".",".",".",".",".","."],
+            [".",".",".",".",".",".",".",".",".",".","."],
+            [".",".",".",".",".",".",".",".",".",".","."],
+            [".",".",".",".",".",".",".",".",".",".","."],
+            [".",".",".",".",".",".",".",".",".",".","."],
+            [".",".",".",".",".",".",".",".",".",".","."],
+            [".",".",".",".",".",".",".",".",".",".","."],
+            [".",".",".",".",".",".",".",".",".",".","."],
+            [".",".",".",".",".",".",".",".",".",".","."]]
 
-board = Board(board_list)
+board = Board(initial_state())
+print(board.get_moves_left())
+moves = board.get_all_moves('gold')
 
-import signal
-
-valid_signals = signal.valid_signals()
-
-print(valid_signals)
+for move in moves:
+    if board.is_move_valid(move[0],move[1]) == False:
+        print(board.get_moves_left())
+        print(False)

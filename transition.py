@@ -90,7 +90,7 @@ class Board(object):
         return counter
 
     def show_state(self):
-        label_row = int(1)
+        label_row = int(11)
         print("\n____________________________________________________")
         for element in ['A','B','C','D','E','F','G','H','I','J','K']:
             print(element, end=' ')
@@ -100,16 +100,82 @@ class Board(object):
             for column in row:
                 print(column, end = ' ')
             print()
-            label_row += 1
+            label_row -= 1
             del row[-1]
         print("____________________________________________________\n")
         return None
 
     def get_all_positions(self,player):
-        return -9999999
+        # Returns all positions occupied by certain player
+        pos_found = []
+        x = 0
+        for row in self.board:
+            y = 0
+            for item in row:
+                if self.get_player_at_field([x,y]) == player:
+                    pos_found.append([x,y])
+                y += 1
+            x += 1
+        return pos_found
 
     def get_all_moves(self,player):
-        return -9999999
+        # Returns datastructure with all possible moves
+        # A move can include moving two ships
+        moves_found = []
+        all_positions = self.get_all_positions(player)
+        opp = self.get_opponent(player)
+
+        for pos in all_positions:
+            moves_left = 2
+            while moves_left != 0:
+                # if pos[0] != 0 or pos[0] != 10 or pos[1] != 0 or pos[1] != 10:
+                    # position is not on the edge of the board
+                    # possibility for capture move
+                if self.get_player_at_field([pos[0]+1,pos[1]-1]) == opp \
+                and pos[0]+1 <= 10 and pos[1]-1>=0:
+                    moves_found.append([pos,[pos[0]+1,pos[1]-1]])
+                    moves_left -= 2
+                if self.get_player_at_field([pos[0]-1,pos[1]-1]) == opp \
+                and pos[0]-1 >= 0 and pos[1]-1 >= 0:
+                    moves_found.append([pos,[pos[0]-1,pos[1]-1]])
+                    moves_left -= 2
+                if self.get_player_at_field([pos[0]-1,pos[1]+1]) == opp \
+                and pos[0]-1 >= 0 and pos[1]+1 <= 10:
+                    moves_found.append([pos,[pos[0]-1,pos[1]+1]])
+                    moves_left -= 2
+                if self.get_player_at_field([pos[0]+1,pos[1]+1]) == opp \
+                and pos[0]+1 <= 10 and pos[1]+1 <= 10:
+                    moves_found.append([pos,[pos[0]+1,pos[1]+1]])
+                    moves_left -= 2
+                # check for regular moves
+                # if self.get_player_at_field([pos[0]-1,pos[1]]) == 'empty':
+                #     moves_found.append([pos,[pos[0]-1,pos[1]]])
+                k = 1
+                while (pos[0] - k) >= 0 and self.get_player_at_field([pos[0]-k,pos[1]]) == 'empty':
+                    moves_found.append([pos,[pos[0]-k,pos[1]]])
+                    k += 1
+                # if self.get_player_at_field([pos[0]+1,pos[1]]) == 'empty':
+                    # moves_found.append([pos,[pos[0]+1,pos[1]]])
+                k = 1
+                while (pos[0] + k) <= 10 and self.get_player_at_field([pos[0]+k,pos[1]]) == 'empty':
+                    moves_found.append([pos,[pos[0]+k,pos[1]]])
+                    k += 1
+                # if self.get_player_at_field([pos[0],pos[1]-1]) == 'empty':
+                    # moves_found.append([pos,[pos[0],pos[1]-1]])
+                k = 1
+                while (pos[1] - k) >= 0 and self.get_player_at_field([pos[0],pos[1]-k]) == 'empty':
+                    moves_found.append([pos,[pos[0],pos[1]-k]])
+                    k += 1
+                # if self.get_player_at_field([pos[0],pos[1]+1]) == 'empty':
+                    # moves_found.append([pos,[pos[0],pos[1]+1]])
+                k = 1
+                while (pos[1] + k) <= 10 and self.get_player_at_field([pos[0],pos[1]+k]) == 'empty':
+                    moves_found.append([pos,[pos[0],pos[1]+k]])
+                    k += 1
+                moves_left = 0
+
+
+        return moves_found
 
     def get_moves(self, player, pos):
         return -9999999
@@ -208,8 +274,8 @@ class Board(object):
                 a, b, c, d = input().split()
                 if a == '-1':
                     return None,None
-                src = [int(b)-1, ord(a.lower())-96-1] # -1 since python indexing starts at 0
-                dest = [int(d)-1, ord(c.lower())-96-1]
+                src = [11-int(b), ord(a.lower())-96-1] # -1 since python indexing starts at 0
+                dest = [11-int(d), ord(c.lower())-96-1]
                 if src[0] < 0 or src[0] > self.width - 1 or src[1] < 0 or src[1] > self.height - 1\
                 or dest[0] < 0 or dest[0] > self.width - 1 or dest[1] < 0 or dest[1] > self.height - 1:
                     raise IndexError
@@ -356,3 +422,10 @@ class Board(object):
             return 600 - self.elapsed_timeG
         else:
             return 600 - self.elapsed_timeS
+
+    def get_opponent(self,player):
+        if player == self.playerG:
+            return self.playerS
+        elif player == self.playerS:
+            return self.playerG
+        else: raise Exception
