@@ -125,63 +125,99 @@ class Board(object):
         all_positions = self.get_all_positions(player)
         opp = self.get_opponent(player)
 
+        # get all possible first moves
         for pos in all_positions:
-            moves_left = 2
-            while moves_left != 0:
-                # if pos[0] != 0 or pos[0] != 10 or pos[1] != 0 or pos[1] != 10:
-                    # position is not on the edge of the board
-                    # possibility for capture move
-                if self.get_player_at_field([pos[0]+1,pos[1]-1]) == opp \
-                and pos[0]+1 <= 10 and pos[1]-1>=0:
-                    moves_found.append([pos,[pos[0]+1,pos[1]-1]])
-                    moves_left -= 2
-                if self.get_player_at_field([pos[0]-1,pos[1]-1]) == opp \
-                and pos[0]-1 >= 0 and pos[1]-1 >= 0:
-                    moves_found.append([pos,[pos[0]-1,pos[1]-1]])
-                    moves_left -= 2
-                if self.get_player_at_field([pos[0]-1,pos[1]+1]) == opp \
-                and pos[0]-1 >= 0 and pos[1]+1 <= 10:
-                    moves_found.append([pos,[pos[0]-1,pos[1]+1]])
-                    moves_left -= 2
-                if self.get_player_at_field([pos[0]+1,pos[1]+1]) == opp \
-                and pos[0]+1 <= 10 and pos[1]+1 <= 10:
-                    moves_found.append([pos,[pos[0]+1,pos[1]+1]])
-                    moves_left -= 2
-                # check for regular moves
-                # if self.get_player_at_field([pos[0]-1,pos[1]]) == 'empty':
-                #     moves_found.append([pos,[pos[0]-1,pos[1]]])
-                k = 1
-                while (pos[0] - k) >= 0 and self.get_player_at_field([pos[0]-k,pos[1]]) == 'empty':
-                    moves_found.append([pos,[pos[0]-k,pos[1]]])
-                    k += 1
-                # if self.get_player_at_field([pos[0]+1,pos[1]]) == 'empty':
-                    # moves_found.append([pos,[pos[0]+1,pos[1]]])
-                k = 1
-                while (pos[0] + k) <= 10 and self.get_player_at_field([pos[0]+k,pos[1]]) == 'empty':
-                    moves_found.append([pos,[pos[0]+k,pos[1]]])
-                    k += 1
-                # if self.get_player_at_field([pos[0],pos[1]-1]) == 'empty':
-                    # moves_found.append([pos,[pos[0],pos[1]-1]])
-                k = 1
-                while (pos[1] - k) >= 0 and self.get_player_at_field([pos[0],pos[1]-k]) == 'empty':
-                    moves_found.append([pos,[pos[0],pos[1]-k]])
-                    k += 1
-                # if self.get_player_at_field([pos[0],pos[1]+1]) == 'empty':
-                    # moves_found.append([pos,[pos[0],pos[1]+1]])
-                k = 1
-                while (pos[1] + k) <= 10 and self.get_player_at_field([pos[0],pos[1]+k]) == 'empty':
-                    moves_found.append([pos,[pos[0],pos[1]+k]])
-                    k += 1
-                moves_left = 0
+            # moves_left = 2
+            # while moves_left != 0:
+            # if pos[0] != 0 or pos[0] != 10 or pos[1] != 0 or pos[1] != 10:
+                # position is not on the edge of the board
+                # possibility for capture move
+            if self.get_player_at_field([pos[0]+1,pos[1]-1]) == opp \
+            and pos[0]+1 <= 10 and pos[1]-1>=0:
+                moves_found.append([pos,[pos[0]+1,pos[1]-1]])
+            if self.get_player_at_field([pos[0]-1,pos[1]-1]) == opp \
+            and pos[0]-1 >= 0 and pos[1]-1 >= 0:
+                moves_found.append([pos,[pos[0]-1,pos[1]-1]])
+            if self.get_player_at_field([pos[0]-1,pos[1]+1]) == opp \
+            and pos[0]-1 >= 0 and pos[1]+1 <= 10:
+                moves_found.append([pos,[pos[0]-1,pos[1]+1]])
+            if self.get_player_at_field([pos[0]+1,pos[1]+1]) == opp \
+            and pos[0]+1 <= 10 and pos[1]+1 <= 10:
+                moves_found.append([pos,[pos[0]+1,pos[1]+1]])
+            # check for regular moves
+            # if self.get_player_at_field([pos[0]-1,pos[1]]) == 'empty':
+            #     moves_found.append([pos,[pos[0]-1,pos[1]]])
+            k = 1
+            while (pos[0] - k) >= 0 and self.get_player_at_field([pos[0]-k,pos[1]]) == 'empty':
+                moves_found.append([pos,[pos[0]-k,pos[1]]])
+                k += 1
+            # if self.get_player_at_field([pos[0]+1,pos[1]]) == 'empty':
+                # moves_found.append([pos,[pos[0]+1,pos[1]]])
+            k = 1
+            while (pos[0] + k) <= 10 and self.get_player_at_field([pos[0]+k,pos[1]]) == 'empty':
+                moves_found.append([pos,[pos[0]+k,pos[1]]])
+                k += 1
+            # if self.get_player_at_field([pos[0],pos[1]-1]) == 'empty':
+                # moves_found.append([pos,[pos[0],pos[1]-1]])
+            k = 1
+            while (pos[1] - k) >= 0 and self.get_player_at_field([pos[0],pos[1]-k]) == 'empty':
+                moves_found.append([pos,[pos[0],pos[1]-k]])
+                k += 1
+            # if self.get_player_at_field([pos[0],pos[1]+1]) == 'empty':
+                # moves_found.append([pos,[pos[0],pos[1]+1]])
+            k = 1
+            while (pos[1] + k) <= 10 and self.get_player_at_field([pos[0],pos[1]+k]) == 'empty':
+                moves_found.append([pos,[pos[0],pos[1]+k]])
+                k += 1
+            # moves_left = 0 # can be removed when while loop is removed
+            # get second moves, if possible
+            n = 0 # used to append 2nd moves to first moves in list
+            sum = 0
+            for move in moves_found:
+                src = move[0]
+                dest = move[1]
+                dest_object = self.board[dest[0]][dest[1]]
+                moves_left = self.make_simulated_move(player, src, dest, 2)
+                if moves_left < 1:
+                    sum+= 1
+                    moves_found[n].append([]) # no second move gives empty list
+                    self.undo_simulated_move(src,dest,dest_object)
+                    n += 1
+                    continue # skip to next possible move
 
+                all_positions_2 = self.get_all_positions(player) # this could be made faster by just changing the one position which was moved
+                all_positions_2.remove(dest) # same ship cannot move twice
+                for pos in all_positions_2:
+                    # check for regular moves, only regular move can be second move
+                    k = 1
+                    while (pos[0] - k) >= 0 and self.get_player_at_field([pos[0]-k,pos[1]]) == 'empty':
+                        moves_found[n].append([pos,[pos[0]-k,pos[1]]])
+                        k += 1
 
+                    k = 1
+                    while (pos[0] + k) <= 10 and self.get_player_at_field([pos[0]+k,pos[1]]) == 'empty':
+                        moves_found[n].append([pos,[pos[0]+k,pos[1]]])
+                        k += 1
+
+                    k = 1
+                    while (pos[1] - k) >= 0 and self.get_player_at_field([pos[0],pos[1]-k]) == 'empty':
+                        moves_found[n].append([pos,[pos[0],pos[1]-k]])
+                        k += 1
+
+                    k = 1
+                    while (pos[1] + k) <= 10 and self.get_player_at_field([pos[0],pos[1]+k]) == 'empty':
+                        moves_found[n].append([pos,[pos[0],pos[1]+k]])
+                        k += 1
+                self.undo_simulated_move(src,dest,dest_object)
+                n += 1
+        print(sum)
         return moves_found
 
     def get_moves(self, player, pos):
         return -9999999
 
     def is_move_valid(self, src, dest):
-        # returns whether move is valid adn adapts variable self.moves_left
+        # returns whether move is valid and adapts variable self.moves_left
         type = -99 # 10 = normal, 11 = capture
         old_moves_left = self.moves_left
         # Check for basic incorrects
@@ -288,7 +324,7 @@ class Board(object):
     def make_a_move(self,player,src,dest,start_time,elapsed_time = 0):
         try:
             #validate turn - check if correct stone at starting field
-            if self.turn != self.get_player_at_field(src):
+            if player != self.get_player_at_field(src):
                 print("Source field is incorrect!")
                 return False
 
@@ -310,7 +346,6 @@ class Board(object):
             self.tracking_time(start_time,elapsed_time)
 
             # Flip turn to other player
-            # change this because two moves in a row are possible, 1 capture or 1 for flag
             if self.moves_left < 1:
                 self.switch_player_at_turn()
             return True
@@ -429,3 +464,39 @@ class Board(object):
         elif player == self.playerS:
             return self.playerG
         else: raise Exception
+
+    def make_simulated_move(self,player,src,dest,moves_left):
+        try:
+            # validate move -- can be deleted later, just for control purposes right now
+            # if self.is_move_valid(src,dest) != True:
+            #     print("Irregular move!")
+            #     return False
+
+            # Determine type of move, adapt moves left
+            if self.get_player_at_field(dest) == self.get_opponent(player):
+                moves_left -= 2
+            elif self.board[src[0]][src[1]] == 3:
+                moves_left -= 2
+                print("flagship moved")
+            elif self.get_player_at_field(dest) == 'empty':
+                moves_left -= 1
+            else:
+                print("Adapting moves_left simulation gone wrong")
+                raise Exception
+
+            # Make move
+            self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
+            self.board[src[0]][src[1]] = '.' #reset old position
+
+            return moves_left
+
+        except Exception as e:
+            # Anything goes wrong
+            print("Exception occured: ", e)
+            return False
+
+    def undo_simulated_move(self,src,dest,dest_object):
+        # function to undo simulated move, where src and dest are from original move
+        self.board[src[0]][src[1]] = self.board[dest[0]][dest[1]]
+        self.board[dest[0]][dest[1]] = dest_object
+        return True

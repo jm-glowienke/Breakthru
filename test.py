@@ -17,10 +17,15 @@ test_1 =    [
             [".",".",".",".",".",".",".",".",".",".","."]]
 
 board = Board(initial_state())
-print(board.get_moves_left())
+
 moves = board.get_all_moves('gold')
 
+#print(len(moves))
+#moves[0].append([[1,2],[3,4]])
+#print(moves)
+sum = 0
 for move in moves:
+
     if board.is_move_valid(move[0],move[1]) == False:
-        print(board.get_moves_left())
+        print(move[0],move[1])
         print(False)
