@@ -288,7 +288,8 @@ class Board(object):
             raise Exception
         return field
 
-    def enter_manual_move(self): #function to manually enter move using keyboard
+    def enter_manual_move(self):
+        #function to manually enter move using keyboard
         while True:
             try:
                 print("Player {0}: It's your move! Format: <Z 99 Z 99>".format(self.turn.upper())\
@@ -487,6 +488,7 @@ class Board(object):
         return True
 
     def is_move_valid2(self, src, dest,moves_left):
+        # not really necessary, just for testing puposes
         # returns whether move is valid and adapts variable self.moves_left
         type = -99 # 10 = normal, 11 = capture
         old_moves_left = moves_left

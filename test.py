@@ -1,5 +1,6 @@
 from transition import Board
 from tools import initial_state
+import random
 
 # board_list = initial_state()
 
@@ -16,9 +17,8 @@ test_1 =    [
             [".",".",".",".",".",".",".",".",".",".","."],
             [".",".",".",".",".",".",".",".",".",".","."]]
 
-board = Board(initial_state())
+board = Board(test_1)
 
-moves = board.get_all_moves('silver')
 
 # #print(len(moves))
 # #moves[0].append([[1,2],[3,4]])

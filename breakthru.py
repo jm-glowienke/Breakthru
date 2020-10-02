@@ -14,7 +14,7 @@ os.system('clear')
 board = Board(tools.initial_state())
 
 
-# Game starts
+# Game SetUp
 print("Welcome to Breakthru! \n Press 1 for new game and 2 to continue old game:")
 choice = int(input())
 if choice == 1:
@@ -48,6 +48,8 @@ elif choice == 2:
 else: raise Exception
 
 # Here the real game play is happening:
+# Engine interacts with manual player
+# Board enforces the rules
 try:
     while board.is_terminal() != True:
         try:
