@@ -33,9 +33,7 @@ class Agent(object):
 
     def next_move_rand(self,current_state,turn):
         # returns random legal move for player at turn
-
         moves = board.get_all_moves(turn)
-
         n_1 = len(moves)
         k = random.randint(0,n_1)
         src_1, dest_1 = moves[k][0],moves[k][1]
