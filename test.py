@@ -1,6 +1,7 @@
 from transition import Board
-from tools import initial_state
+from tools import initial_state,read_game_log
 import random
+from negamax import NegaMax
 
 # board_list = initial_state()
 
@@ -17,7 +18,24 @@ test_1 =    [
             [".",".",".",".",".",".",".",".",".",".","."],
             [".",".",".",".",".",".",".",".",".",".","."]]
 
-board = Board(test_1)
+board = Board(initial_state())
+
+log = read_game_log("log_20201004-141438")
+for i in range(0,len(log)):
+    turn = board.get_turn()
+    print("Player {} moves".format(turn.upper()))
+    board.make_a_move(board.get_turn(),log[i][0],log[i][1],0,elapsed_time = log[i][2])
+    board.show_state()
+print("\n Continuing old game...")
+
+agent = NegaMax(board,board.get_turn())
+
+print(agent.get_val(depth = 1,alpha = 20,beta = 0))
+
+
+
+
+
 
 # agents = { 1: 'manual - manual',
 #     2: 'engine - manual',
@@ -28,10 +46,6 @@ board = Board(test_1)
 # for i in range(1,5):
 #     print("{0} : {1}".format(i, agents[i]))
 
-
-a = [1,2,3,4,5,6,7,8,9,10,11,12,22,33,44,55,66]
-print(len(a))
-print(a[17-1])
 # #print(len(moves))
 # #moves[0].append([[1,2],[3,4]])
 # #print(moves)

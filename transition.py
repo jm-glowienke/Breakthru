@@ -22,6 +22,9 @@ class Board(object):
         self.elapsed_timeS = 0
         self.end_time = 0
 
+    def get_board(self):
+        return self.board
+
     def is_game_over(self):
         return self.game_over
 
