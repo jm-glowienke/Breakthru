@@ -127,17 +127,17 @@ class Board(object):
 
         # get all possible first moves
         for pos in all_positions:
-            if self.get_player_at_field([pos[0]+1,pos[1]-1]) == opp \
-            and pos[0]+1 <= 10 and pos[1]-1>=0:
+            if pos[0]+1 <= 10 and pos[1]-1>=0 \
+            and self.get_player_at_field([pos[0]+1,pos[1]-1]) == opp:
                 moves_found.append([pos,[pos[0]+1,pos[1]-1]])
-            if self.get_player_at_field([pos[0]-1,pos[1]-1]) == opp \
-            and pos[0]-1 >= 0 and pos[1]-1 >= 0:
+            if pos[0]-1 >= 0 and pos[1]-1 >= 0 \
+            and self.get_player_at_field([pos[0]-1,pos[1]-1]) == opp:
                 moves_found.append([pos,[pos[0]-1,pos[1]-1]])
-            if self.get_player_at_field([pos[0]-1,pos[1]+1]) == opp \
-            and pos[0]-1 >= 0 and pos[1]+1 <= 10:
+            if pos[0]-1 >= 0 and pos[1]+1 <= 10 \
+            and self.get_player_at_field([pos[0]-1,pos[1]+1]) == opp:
                 moves_found.append([pos,[pos[0]-1,pos[1]+1]])
-            if self.get_player_at_field([pos[0]+1,pos[1]+1]) == opp \
-            and pos[0]+1 <= 10 and pos[1]+1 <= 10:
+            if pos[0]+1 <= 10 and pos[1]+1 <= 10 \
+            and self.get_player_at_field([pos[0]+1,pos[1]+1]) == opp:
                 moves_found.append([pos,[pos[0]+1,pos[1]+1]])
             # check for regular moves
             k = 1
@@ -292,8 +292,8 @@ class Board(object):
         #function to manually enter move using keyboard
         while True:
             try:
-                print("Player {0}: It's your move! Format: <Z 99 Z 99>".format(self.turn.upper())\
-                + "\n <-1 0 0 0> to undo last move")
+                print("Player {0}: Enter your move {1}! Format: <Z 99 Z 99>"\
+                .format(self.turn.upper(),3-self.moves_left))
                 a, b, c, d = input().split()
                 if a == '-1':
                     return None,None
@@ -370,8 +370,8 @@ class Board(object):
 
         elif self.turn == self.playerS:
             self.elapsed_timeS -= int(elapsed_time)
-        print("Silver:%s " % self.elapsed_timeS)
-        print("Gold:%s " % self.elapsed_timeG)
+        # print("Silver:%s " % self.elapsed_timeS)
+        # print("Gold:%s " % self.elapsed_timeG)
         if self.moves_left == 1:
             self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
             self.board[src[0]][src[1]] = '.' #reset old position

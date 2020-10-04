@@ -19,7 +19,19 @@ test_1 =    [
 
 board = Board(test_1)
 
+# agents = { 1: 'manual - manual',
+#     2: 'engine - manual',
+#     3: 'manual - engine',
+#     4: 'engine - engine'
+#     }
+# print("    gold - silver \n   --------------")
+# for i in range(1,5):
+#     print("{0} : {1}".format(i, agents[i]))
 
+
+a = [1,2,3,4,5,6,7,8,9,10,11,12,22,33,44,55,66]
+print(len(a))
+print(a[17-1])
 # #print(len(moves))
 # #moves[0].append([[1,2],[3,4]])
 # #print(moves)
