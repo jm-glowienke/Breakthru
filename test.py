@@ -7,10 +7,10 @@ from negamax import NegaMax
 
 test_1 =    [
             [1,".",".",".",".",".",".",".",".",".","."],
-            [".",2,".",".",".",".",".",".",".",".","."],
             [".",".",".",".",".",".",".",".",".",".","."],
             [".",".",".",".",".",".",".",".",".",".","."],
             [".",".",".",".",".",".",".",".",".",".","."],
+            [".",".",".",".",3,".",".",".",".",".","."],
             [".",".",".",".",".",".",".",".",".",".","."],
             [".",".",".",".",".",".",".",".",".",".","."],
             [".",".",".",".",".",".",".",".",".",".","."],
@@ -19,18 +19,21 @@ test_1 =    [
             [".",".",".",".",".",".",".",".",".",".","."]]
 
 board = Board(initial_state())
+# board = Board(test_1)
 
-log = read_game_log("log_20201004-141438")
-for i in range(0,len(log)):
-    turn = board.get_turn()
-    print("Player {} moves".format(turn.upper()))
-    board.make_a_move(board.get_turn(),log[i][0],log[i][1],0,elapsed_time = log[i][2])
-    board.show_state()
-print("\n Continuing old game...")
+# log = read_game_log("log_20201004-141438")
+# for i in range(0,len(log)):
+#     turn = board.get_turn()
+#     print("Player {} moves".format(turn.upper()))
+#     board.make_a_move(board.get_turn(),log[i][0],log[i][1],0,elapsed_time = log[i][2])
+#     board.show_state()
+# print("\n Continuing old game...")
 
-agent = NegaMax(board,board.get_turn())
+agent = NegaMax(board,'gold')
 
-print(agent.get_val(depth = 1,alpha = 20,beta = 0))
+x = agent.get_val('gold',depth = 2,alpha = 20,beta = 0)
+
+print(x)
 
 
 

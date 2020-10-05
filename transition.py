@@ -160,46 +160,46 @@ class Board(object):
                 moves_found.append([pos,[pos[0],pos[1]+k]])
                 k += 1
             # get second moves, if possible
-            n = 0 # used to append 2nd moves to first moves in list
-            for move in moves_found:
-                src = move[0]
-                dest = move[1]
-                dest_object = self.board[dest[0]][dest[1]]
-                moves_left = self.make_simulated_move(player, src, dest, 2)
-                moves_found[n].append([])
-                if moves_left < 1:
-                    # no second move --> no change in moves_found[n][2]
-                    self.undo_simulated_move(src,dest,dest_object)
-                    n += 1
-                    continue # skip to next possible move
-
-                all_positions_2 = self.get_all_positions(player) # this could be made faster by just changing the one position which was moved
-                all_positions_2.remove(dest) # same ship cannot move twice
-                for pos in all_positions_2:
-                    # check for regular moves, only regular move can be second move
-                    if self.board[pos[0]][pos[1]] == 3: # flagship cannot be moved in 2nd move
-                        continue
-                    k = 1
-                    while (pos[0] - k) >= 0 and self.get_player_at_field([pos[0]-k,pos[1]]) == 'empty':
-                        moves_found[n][2].append([pos,[pos[0]-k,pos[1]]])
-                        k += 1
-
-                    k = 1
-                    while (pos[0] + k) <= 10 and self.get_player_at_field([pos[0]+k,pos[1]]) == 'empty':
-                        moves_found[n][2].append([pos,[pos[0]+k,pos[1]]])
-                        k += 1
-
-                    k = 1
-                    while (pos[1] - k) >= 0 and self.get_player_at_field([pos[0],pos[1]-k]) == 'empty':
-                        moves_found[n][2].append([pos,[pos[0],pos[1]-k]])
-                        k += 1
-
-                    k = 1
-                    while (pos[1] + k) <= 10 and self.get_player_at_field([pos[0],pos[1]+k]) == 'empty':
-                        moves_found[n][2].append([pos,[pos[0],pos[1]+k]])
-                        k += 1
+        n = 0 # used to append 2nd moves to first moves in list
+        for move in moves_found:
+            src = move[0]
+            dest = move[1]
+            dest_object = self.board[dest[0]][dest[1]]
+            moves_left = self.make_simulated_move(player, src, dest, 2)
+            moves_found[n].append([])
+            if moves_left < 1:
+                # no second move --> no change in moves_found[n][2]
                 self.undo_simulated_move(src,dest,dest_object)
                 n += 1
+                continue # skip to next possible move
+
+            all_positions_2 = self.get_all_positions(player) # this could be made faster by just changing the one position which was moved
+            all_positions_2.remove(dest) # same ship cannot move twice
+            for pos in all_positions_2:
+                # check for regular moves, only regular move can be second move
+                if self.board[pos[0]][pos[1]] == 3: # flagship cannot be moved in 2nd move
+                    continue
+                k = 1
+                while (pos[0] - k) >= 0 and self.get_player_at_field([pos[0]-k,pos[1]]) == 'empty':
+                    moves_found[n][2].append([pos,[pos[0]-k,pos[1]]])
+                    k += 1
+
+                k = 1
+                while (pos[0] + k) <= 10 and self.get_player_at_field([pos[0]+k,pos[1]]) == 'empty':
+                    moves_found[n][2].append([pos,[pos[0]+k,pos[1]]])
+                    k += 1
+
+                k = 1
+                while (pos[1] - k) >= 0 and self.get_player_at_field([pos[0],pos[1]-k]) == 'empty':
+                    moves_found[n][2].append([pos,[pos[0],pos[1]-k]])
+                    k += 1
+
+                k = 1
+                while (pos[1] + k) <= 10 and self.get_player_at_field([pos[0],pos[1]+k]) == 'empty':
+                    moves_found[n][2].append([pos,[pos[0],pos[1]+k]])
+                    k += 1
+            self.undo_simulated_move(src,dest,dest_object)
+            n += 1
         return moves_found
 
     def get_moves(self, player, pos):
@@ -471,6 +471,9 @@ class Board(object):
                 moves_left -= 1
             else:
                 print("Adapting moves_left simulation gone wrong")
+                self.show_state()
+                print(self.get_player_at_field(dest))
+                print(self.get_opponent(player))
                 raise Exception
 
             # Make move

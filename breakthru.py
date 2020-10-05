@@ -72,11 +72,11 @@ try:
             start_time = time.time()
             if board.get_turn() == 'gold':
                 print("Player Gold moves")
-                print(board.get_number_pieces('gold'))
+                # print(board.get_number_pieces('gold'))
                 src_1,dest_1,src_2,dest_2 = GOLD.get_move(board)
             elif board.get_turn() == 'silver':
                 print("Player Silver moves")
-                print(board.get_number_pieces('silver'))
+                # print(board.get_number_pieces('silver'))
                 src_1,dest_1,src_2, dest_2 = SILVER.get_move(board)
             # src, dest = board.enter_manual_move()
             if src_1 == None:

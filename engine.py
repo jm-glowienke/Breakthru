@@ -57,7 +57,17 @@ class Agent(object):
         if self.type == 'manual':
             return self.next_move_manual(board)
         elif self.type == 'engine':
-            return self.next_move_rand(self.turn,board) # NEEDS TO BE CHANGED TO PROPER ENGINE
+            src_1, dest_1, src_2, dest_2 = self.next_move_rand(self.turn,board) # NEEDS TO BE CHANGED TO PROPER ENGINE
+            print("Engine gives:")
+            print("{0} {1} {2} {3}".format(chr(src_1[1]+97),11-src_1[0],chr(dest_1[1]+97),11-dest_1[0]))
+            if src_2 != None:
+                print("{0} {1} {2} {3}".format(chr(src_2[1]+97),11-src_2[0],chr(dest_2[1]+97),11-dest_2x[0]))
+            # a, b, c, d = input().split()
+            # if a == '-1':
+            #     return None,None
+            # src = [11-int(b), ord(a.lower())-96-1] # -1 since python indexing starts at 0
+            # dest = [11-int(d), ord(c.lower())-96-1]
+            return src_1, dest_1, src_2, dest_2
         else:
             print("Something wrong with type of agent")
             raise Exception
