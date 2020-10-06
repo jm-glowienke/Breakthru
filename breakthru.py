@@ -34,11 +34,13 @@ if choice == 1:
                     4: Agent('engine','gold')}
     GOLD = gold_agents[type]
     SILVER = silver_agents[type]
-    # print("Player GOLD: Do you want to skip your first move? [y/n]")
-    # skip = input()
-    # if skip.lower() == 'y':
-    #     board.gold_skips()
-    #     board.switch_player_at_turn()
+    print("Player GOLD: Do you want to skip your first move? [y/n]")
+    skip = input()
+    if skip.lower() == 'y':
+        board.gold_skips()
+        board.switch_player_at_turn()
+        print(board.get_turn())
+        print(board.get_moves_left())
     board.show_state()
 elif choice == 2:
     while True:
