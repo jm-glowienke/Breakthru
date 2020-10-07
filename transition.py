@@ -38,6 +38,10 @@ class Board(object):
         self.history.append([[99,0],[0,0],0])
         return
 
+    def save_type(self,type):
+        self.history.append([type])
+        return
+
     def add_to_history(self,old_history): # probably not needed
         n = len(old_history)
         for i in range(0,n):

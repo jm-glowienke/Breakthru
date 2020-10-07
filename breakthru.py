@@ -7,6 +7,14 @@ import time
 # Initialization
 os.system('clear')
 board = Board(tools.initial_state())
+silver_agents = {1: Agent('manual','silver'),
+                2: Agent('manual','silver'),
+                3: Agent('engine','silver'),
+                4: Agent('engine','silver')}
+gold_agents = {1: Agent('manual','gold'),
+                2: Agent('engine','gold'),
+                3: Agent('manual','gold'),
+                4: Agent('engine','gold')}
 
 
 # Game SetUp
@@ -24,30 +32,27 @@ if choice == 1:
     for i in range(1,5):
         print("{0} : {1}".format(i, agents[i]))
     type = int(input())
-    silver_agents = {1: Agent('manual','silver'),
-                    2: Agent('manual','silver'),
-                    3: Agent('engine','silver'),
-                    4: Agent('engine','silver')}
-    gold_agents = {1: Agent('manual','gold'),
-                    2: Agent('engine','gold'),
-                    3: Agent('manual','gold'),
-                    4: Agent('engine','gold')}
     GOLD = gold_agents[type]
     SILVER = silver_agents[type]
-    print("Player GOLD: Do you want to skip your first move? [y/n]")
-    skip = input()
-    if skip.lower() == 'y':
-        board.gold_skips()
-        board.switch_player_at_turn()
-        print(board.get_turn())
-        print(board.get_moves_left())
+    board.save_type(type)
+    if type == 1 or type == 3:
+        print("Player GOLD: Do you want to skip your first move? [y/n]")
+        skip = input()
+        if skip.lower() == 'y':
+            board.gold_skips()
+            board.switch_player_at_turn()
+            print(board.get_turn())
+            print(board.get_moves_left())
     board.show_state()
 elif choice == 2:
     while True:
         try:
             print("Enter the name of the file you want to load:")
             file = input()
-            log = tools.read_game_log(file)
+            type,log = tools.read_game_log(file)
+            GOLD = gold_agents[type]
+            SILVER = silver_agents[type]
+            board.save_type(type)
             if log[0][0][0] == 99:
                 print("Gold skipped first move")
                 board.switch_player_at_turn()
@@ -57,7 +62,7 @@ elif choice == 2:
             for i in range(0,len(log)):
                 turn = board.get_turn()
                 print("Player {} moves".format(turn.upper()))
-                board.make_a_move(board.get_turn(),log[i][0],log[i][1],0,elapsed_time = log[i][2])
+                board.make_a_move(board.get_turn(),log[i][0],log[i][1],0,elapsed_time = log[i][2]+0.1)
                 board.show_state()
             print("\n Continuing old game...")
             break
@@ -100,7 +105,7 @@ try:
     print("Player {0} wins the game!".format(board.get_winner()))
 except KeyboardInterrupt:
     tools.save_game_log(board.get_history())
-    print("\n Game interrupted! Log is saved!")
-# except: #any unexpected error occurs during game play
+    print("\n Game interrupted! Log is saved.")
+# except: #any unexpected error occurs during game play # disable for testing purposes
 #     tools.save_game_log(board.get_history())
 #     print("\n An error occurred! Log is saved!")

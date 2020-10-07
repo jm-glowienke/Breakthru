@@ -2,6 +2,7 @@ from transition import Board
 from tools import initial_state,read_game_log
 import random
 from negamax import NegaMax
+import os
 
 # board_list = initial_state()
 
@@ -29,13 +30,11 @@ board = Board(initial_state())
 #     board.show_state()
 # print("\n Continuing old game...")
 
-agent = NegaMax(board,'gold')
-
-x = agent.get_val('gold',depth = 2,alpha = 20,beta = 0)
-
-print(x)
-
-
+# agent = NegaMax(board,'gold')
+#
+# x = agent.get_val('gold',depth = 2,alpha = 20,beta = 0)
+#
+# print(x)
 
 
 
