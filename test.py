@@ -8,7 +8,7 @@ import os
 
 test_1 =    [
             [1,".",".",".",".",".",".",".",".",".","."],
-            [".",".",".",".",".",".",".",".",".",".","."],
+            [".",2,".",".",".",2,".",".",".",".","."],
             [".",".",".",".",".",".",".",".",".",".","."],
             [".",".",".",".",".",".",".",".",".",".","."],
             [".",".",".",".",3,".",".",".",".",".","."],
@@ -22,22 +22,10 @@ test_1 =    [
 board = Board(initial_state())
 # board = Board(test_1)
 
-# log = read_game_log("log_20201004-141438")
-# for i in range(0,len(log)):
-#     turn = board.get_turn()
-#     print("Player {} moves".format(turn.upper()))
-#     board.make_a_move(board.get_turn(),log[i][0],log[i][1],0,elapsed_time = log[i][2])
-#     board.show_state()
-# print("\n Continuing old game...")
+agent = NegaMax(board,'gold')
 
-# agent = NegaMax(board,'gold')
-#
-# x = agent.get_val('gold',depth = 2,alpha = 20,beta = 0)
-#
-# print(x)
-
-
-
+# print(agent.utility(board,'silver'))
+print(agent.get_val('gold',2,-30,30))
 
 # agents = { 1: 'manual - manual',
 #     2: 'engine - manual',

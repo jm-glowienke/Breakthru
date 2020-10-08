@@ -19,34 +19,27 @@ class NegaMax(object):
     def get_val(self,player,depth,alpha,beta):
         # run NegaMax algorithm
         if depth == 0 or self.state.is_terminal() == True:
-            return self.utility(self.state)
+            return self.utility(self.state,player),[]
         self.score = -9999999
 
+        best_move = []
         childNodes = self.state.get_all_moves(player)
-        # childNodes = order_moves(childNodes)
-        # print(childNodes)
-        print(len(childNodes))
-        print(player)
-        # print(self.state.get_turn())
-        # print(self.state.get_moves_left())
         for child in childNodes:
-            print('NEW CHILD')
-            print(player)
-            # print(self.state.get_turn())
             print(child)
             src = child[0]
             dest = child[1]
             dest_object = self.state.get_board()[dest[0]][dest[1]]
             moves_left = self.state.make_simulated_move(player, src, dest, 2)
-            # print(child)
-            self.state.show_state()
             if moves_left == 0: # single move perfomed
-                # self.state.switch_player_at_turn()
-                value = -self.get_val(self.get_opponent(player),depth - 1,-beta,-alpha)
+                value, best_sub_move = self.get_val(self.get_opponent(player),depth - 1,-beta,-alpha)
+                value = -value
                 self.state.undo_simulated_move(src,dest,dest_object)
                 if value > self.score: self.score = value
-                if self.score > alpha: alpha = self.score
-                if self.score >= beta: break
+                if self.score > alpha:
+                    alpha = self.score
+                    if self.score >= beta: break
+                    best_move = [[src,dest]]
+                    best_move.append(best_sub_move)
             elif moves_left == 1: # two moves performed
                 for child2 in child[2]:
                     src_2 = child2[0]
@@ -54,20 +47,151 @@ class NegaMax(object):
                     dest_object_2 = self.state.get_board()[dest_2[0]][dest_2[1]]
                     moves_left = self.state.make_simulated_move(player,src_2,dest_2,1)
 
-                    self.state.show_state()
-                    # self.state.switch_player_at_turn()
-                    value = -self.get_val(self.get_opponent(player),depth-1,-beta,-alpha)
+                    value, best_sub_move = self.get_val(self.get_opponent(player),depth-1,-beta,-alpha)
+                    value = -value
                     self.state.undo_simulated_move(src_2,dest_2,dest_object_2)
                     if value > self.score: self.score = value
-                    if self.score > alpha: alpha = score
-                    if self.score >= beta: break
+                    if self.score > alpha:
+                        alpha = self.score
+                        if self.score >= beta: break
+                        best_move = [[src,dest]]
+                        best_move.append([src_2,dest_2])
+                        best_move.append(best_sub_move)
                 self.state.undo_simulated_move(src,dest,dest_object)
-
-        return self.score
+        return self.score, best_move
 
 
     def order_moves(childNodes):
         return False
 
-    def utility(self,state):
-        return random.randint(0,20)
+    def utility(self,state,player):
+        if player == 'gold':
+            if state.is_terminal() == True and state.get_winner() == 'GOLD':
+                return 30
+            elif state.is_terminal():
+                return -30
+            else:
+                opp = self.get_opponent(player)
+                flag_attack = 0
+                attack = 0
+                direct_access = 0
+                positions = state.get_all_positions(player)
+                number_ships_left = len(positions)
+                for pos in positions:
+                    if pos[0]+1 <= 10 and pos[1]-1>=0 \
+                    and state.get_player_at_field([pos[0]+1,pos[1]-1]) == opp:
+                        if state.get_board()[pos[0]][pos[1]] == 3:
+                            flag_attack += 1
+                        else:
+                            attack += 1
+                    if pos[0]-1 >= 0 and pos[1]-1 >= 0 \
+                    and state.get_player_at_field([pos[0]-1,pos[1]-1]) == opp:
+                        if state.get_board()[pos[0]][pos[1]] == 3:
+                            flag_attack += 1
+                        else:
+                            attack += 1
+                    if pos[0]-1 >= 0 and pos[1]+1 <= 10 \
+                    and state.get_player_at_field([pos[0]-1,pos[1]+1]) == opp:
+                        if state.get_board()[pos[0]][pos[1]] == 3:
+                            flag_attack += 1
+                        else:
+                            attack += 1
+                    if pos[0]+1 <= 10 and pos[1]+1 <= 10 \
+                    and state.get_player_at_field([pos[0]+1,pos[1]+1]) == opp:
+                        if state.get_board()[pos[0]][pos[1]] == 3:
+                            flag_attack += 1
+                        else:
+                            attack += 1
+                    if state.get_board()[pos[0]][pos[1]] == 3:
+                        k = 1
+                        while (pos[0] - k) >= 0 and state.get_player_at_field([pos[0]-k,pos[1]]) == 'empty':
+                            if pos[0] - k == 0:
+                                direct_access += 1
+                            k += 1
+                        k = 1
+                        while (pos[0] + k) <= 10 and state.get_player_at_field([pos[0]+k,pos[1]]) == 'empty':
+                            if pos[0] + k == 10:
+                                direct_access += 1
+                            k += 1
+                        k = 1
+                        while (pos[1] - k) >= 0 and state.get_player_at_field([pos[0],pos[1]-k]) == 'empty':
+                            if pos[0] - k == 0:
+                                direct_access += 1
+                            k += 1
+                        k = 1
+                        while (pos[1] + k) <= 10 and state.get_player_at_field([pos[0],pos[1]+k]) == 'empty':
+                            if pos[1] + k == 10:
+                                direct_access += 1
+                            k += 1
+
+                # add random value to prevent precise equal values
+            utility =  (number_ships_left - 3*flag_attack - attack + 2 * direct_access + round(random.uniform(0,1),2))
+            return utility
+
+        elif player == 'silver':
+            if state.is_terminal() == True and state.get_winner() == 'SILVER':
+                return 30
+            elif state.is_terminal():
+                return -30
+            else:
+                opp = self.get_opponent(player)
+                flag_attack = 0
+                attack = 0
+                direct_access = 0
+                positions = state.get_all_positions(player)
+                number_ships_left = len(positions)
+                for pos in positions:
+                    if pos[0]+1 <= 10 and pos[1]-1>=0 \
+                    and state.get_player_at_field([pos[0]+1,pos[1]-1]) == opp:
+                        if state.get_board()[pos[0]+1][pos[1]-1] == 3:
+                            flag_attack += 1
+                        else:
+                            attack += 1
+                    if pos[0]-1 >= 0 and pos[1]-1 >= 0 \
+                    and state.get_player_at_field([pos[0]-1,pos[1]-1]) == opp:
+                        if state.get_board()[pos[0]-1][pos[1]-1] == 3:
+                            flag_attack += 1
+                        else:
+                            attack += 1
+                    if pos[0]-1 >= 0 and pos[1]+1 <= 10 \
+                    and state.get_player_at_field([pos[0]-1,pos[1]+1]) == opp:
+                        if state.get_board()[pos[0]-1][pos[1]+1] == 3:
+                            flag_attack += 1
+                        else:
+                            attack += 1
+                    if pos[0]+1 <= 10 and pos[1]+1 <= 10 \
+                    and state.get_player_at_field([pos[0]+1,pos[1]+1]) == opp:
+                        if state.get_board()[pos[0]+1][pos[1]+1] == 3:
+                            flag_attack += 1
+                        else:
+                            attack += 1
+                # Analyse flagship situation
+                k = 0
+                for row in state.get_board():
+                    if 3 in row:
+                        pos = [k,row.index(3)]
+                        if state.get_board()[pos[0]][pos[1]] == 3:
+                            k = 1
+                            while (pos[0] - k) >= 0 and state.get_player_at_field([pos[0]-k,pos[1]]) == 'empty':
+                                if pos[0] - k == 0:
+                                    direct_access += 1
+                                k += 1
+                            k = 1
+                            while (pos[0] + k) <= 10 and state.get_player_at_field([pos[0]+k,pos[1]]) == 'empty':
+                                if pos[0] + k == 10:
+                                    direct_access += 1
+                                k += 1
+                            k = 1
+                            while (pos[1] - k) >= 0 and state.get_player_at_field([pos[0],pos[1]-k]) == 'empty':
+                                if pos[0] - k == 0:
+                                    direct_access += 1
+                                k += 1
+                            k = 1
+                            while (pos[1] + k) <= 10 and state.get_player_at_field([pos[0],pos[1]+k]) == 'empty':
+                                if pos[1] + k == 10:
+                                    direct_access += 1
+                                k += 1
+
+                # add random value to prevent precise equal values
+            utility =  (number_ships_left + 2*flag_attack + attack - 4 * direct_access + round(random.uniform(0,1),2))
+            return utility

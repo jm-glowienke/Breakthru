@@ -299,8 +299,8 @@ class Board(object):
         #function to manually enter move using keyboard
         while True:
             try:
-                print("Player {0}: Enter your move {1}! Format: <Z 99 Z 99>"\
-                .format(self.turn.upper(),3-self.moves_left))
+                print("Player {0}: Enter your move! Format: <Z 99 Z 99>"\
+                .format(self.turn.upper()))
                 a, b, c, d = input().split()
                 if a == '-1':
                     return None,None

@@ -48,12 +48,14 @@ class Agent(object):
         return src_1, dest_1, src_2, dest_2
 
     def next_move_manual(self,board):
-        print(board.get_turn())
-        print(board.get_moves_left())
         src_1, dest_1 = board.enter_manual_move()
-        src_2, dest_2 = board.enter_manual_move()
-
-        return src_1, dest_1, src_2, dest_2
+        if abs(src_1[0]-dest_1[0]) == 1 and abs(src_1[1]-dest_1[1]) == 1:
+            return src_1, dest_1, None, None
+        elif board.get_board()[src_1[0]][src_1[1]] == 3:
+            return src_1, dest_1, None, None
+        else:
+            src_2, dest_2 = board.enter_manual_move()
+            return src_1, dest_1, src_2, dest_2
 
     def get_move(self,board):
         if self.type == 'manual':
