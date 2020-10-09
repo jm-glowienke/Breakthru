@@ -89,6 +89,7 @@ class NegaMax(object):
                 flag_attack = 0
                 attack = 0
                 direct_access = 0
+                flag_covered = 0
                 positions = state.get_all_positions(player)
                 number_ships_left = len(positions)
                 for pos in positions:
@@ -137,7 +138,19 @@ class NegaMax(object):
                             if pos[1] + k == 10:
                                 direct_access += 1
                             k += 1
-            utility =  (number_ships_left - 4*flag_attack - attack + 2 * direct_access)# + round(random.uniform(0,1),2))
+                        if pos[0]+1 <= 10 and pos[1]-1>=0 \
+                        and state.get_player_at_field([pos[0]+1,pos[1]-1]) == player:
+                            flag_covered += 1
+                        if pos[0]-1 >= 0 and pos[1]-1 >= 0 \
+                        and state.get_player_at_field([pos[0]-1,pos[1]-1]) == player:
+                            flag_covered += 1
+                        if pos[0]-1 >= 0 and pos[1]+1 <= 10 \
+                        and state.get_player_at_field([pos[0]-1,pos[1]+1]) == player:
+                            flag_covered += 1
+                        if pos[0]+1 <= 10 and pos[1]+1 <= 10 \
+                        and state.get_player_at_field([pos[0]+1,pos[1]+1]) == player:
+                            flag_covered += 1
+            utility =  (number_ships_left - 4*flag_attack - attack + 2 * direct_access + 3 * flag_covered)
             return utility
 
         elif player == 'silver':
@@ -152,6 +165,7 @@ class NegaMax(object):
                 direct_access = 0
                 positions = state.get_all_positions(player)
                 number_ships_left = len(positions)
+                gold_number_ships_left = state.get_number_pieces('gold')
                 for pos in positions:
                     if pos[0]+1 <= 10 and pos[1]-1>=0 \
                     and state.get_player_at_field([pos[0]+1,pos[1]-1]) == opp:
@@ -203,5 +217,5 @@ class NegaMax(object):
                                 if pos[1] + k == 10:
                                     direct_access += 1
                                 k += 1
-            utility =  (number_ships_left + 2*flag_attack + attack - 4 * direct_access)# + round(random.uniform(0,1),2))
+            utility =  (number_ships_left + 2*flag_attack + attack - 6 * direct_access - 1 * gold_number_ships_left)
             return utility

@@ -92,12 +92,18 @@ class Agent(object):
             src_2, dest_2 = board.enter_manual_move()
             return src_1, dest_1, src_2, dest_2
 
-    def get_move(self,board):
+    def get_move(self,board,N = None):
         if self.type == 'manual':
             return self.next_move_manual(board)
         elif self.type == 'engine':
-            # src_1, dest_1, src_2, dest_2 = self.next_move_rand(self.turn,board) # NEEDS TO BE CHANGED TO PROPER ENGINE
-            src_1, dest_1, src_2, dest_2 = self.next_move_engine(board)
+            if N == 0 and self.turn == 'gold':
+                src_1, dest_1, src_2, dest_2 = [3,4],[4,4],[3,6],[4,6]
+            elif N == 2 and self.turn == 'gold':
+                src_1, dest_1, src_2, dest_2 = [7,4],[6,4],[7,6],[6,6]
+            # elif self.turn == 'silver':
+            else:
+                # src_1, dest_1, src_2, dest_2 = self.next_move_rand(self.turn,board) # NEEDS TO BE CHANGED TO PROPER ENGINE
+                src_1, dest_1, src_2, dest_2 = self.next_move_engine(board)
             print("Engine gives:")
             print("{0} {1} {2} {3}".format(chr(src_1[1]+97),11-src_1[0],chr(dest_1[1]+97),11-dest_1[0]))
             if src_2 != None:

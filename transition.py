@@ -206,9 +206,6 @@ class Board(object):
             n += 1
         return moves_found
 
-    def get_moves(self, player, pos):
-        return -9999999
-
     def is_move_valid(self, src, dest):
         # returns whether move is valid and adapts variable self.moves_left
         type = -99 # 10 = normal, 11 = capture

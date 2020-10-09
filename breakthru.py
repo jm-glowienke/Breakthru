@@ -73,6 +73,7 @@ else: raise Exception
 # Here the real game play is happening:
 # Engine interacts with manual player
 # Board enforces the rules
+N = 0
 try:
     while board.is_terminal() != True:
         try:
@@ -80,13 +81,13 @@ try:
             if board.get_turn() == 'gold':
                 print("Player Gold moves")
                 # print(board.get_number_pieces('gold'))
-                src_1,dest_1,src_2,dest_2 = GOLD.get_move(board)
+                src_1,dest_1,src_2,dest_2 = GOLD.get_move(board,N = N)
                 # print(src_1,dest_1,src_2,dest_2)
                 # print(board.get_moves_left())
             elif board.get_turn() == 'silver':
                 print("Player Silver moves")
                 # print(board.get_number_pieces('silver'))
-                src_1,dest_1,src_2, dest_2 = SILVER.get_move(board)
+                src_1,dest_1,src_2, dest_2 = SILVER.get_move(board,N = N)
             # src, dest = board.enter_manual_move()
             if src_1 == None:
                 print("Undoing last move...")
@@ -101,6 +102,7 @@ try:
                 if board.make_a_move(board.get_turn(),src_2, dest_2,start_time) == False:
                     raise ValueError
             board.show_state()
+            N += 1
         except ValueError:
             print("Try again")
             board.show_state()
@@ -109,6 +111,6 @@ try:
 except KeyboardInterrupt:
     tools.save_game_log(board.get_history())
     print("\n Game interrupted! Log is saved.")
-# except: #any unexpected error occurs during game play # disable for testing purposes
-#     tools.save_game_log(board.get_history())
-#     print("\n An error occurred! Log is saved!")
+except: #any unexpected error occurs during game play # disable for testing purposes
+    tools.save_game_log(board.get_history())
+    print("\n An error occurred! Log is saved!")
