@@ -1,5 +1,6 @@
 from transition import Board
 import random
+import time
 
 class NegaMax(object):
 
@@ -8,6 +9,7 @@ class NegaMax(object):
         # self.sim_board = self.state.get_board()
         self.player = player
         self.score = -9999999
+        self.time = time.time()
 
     def get_opponent(self,player):
         if player == 'gold':
@@ -26,6 +28,9 @@ class NegaMax(object):
         best_move = []
         childNodes = self.state.get_all_moves(player)
         for child in childNodes:
+            if time.time() - self.time > 30:
+                print("Search timed out!")
+                return self.score, best_move
             # print(player)
             # print(child)
             src = child[0]
@@ -132,9 +137,7 @@ class NegaMax(object):
                             if pos[1] + k == 10:
                                 direct_access += 1
                             k += 1
-
-                # add random value to prevent precise equal values
-            utility =  (number_ships_left - 3*flag_attack - attack + 2 * direct_access)# + round(random.uniform(0,1),2))
+            utility =  (number_ships_left - 4*flag_attack - attack + 2 * direct_access)# + round(random.uniform(0,1),2))
             return utility
 
         elif player == 'silver':
@@ -200,7 +203,5 @@ class NegaMax(object):
                                 if pos[1] + k == 10:
                                     direct_access += 1
                                 k += 1
-
-                # add random value to prevent precise equal values
             utility =  (number_ships_left + 2*flag_attack + attack - 4 * direct_access)# + round(random.uniform(0,1),2))
             return utility

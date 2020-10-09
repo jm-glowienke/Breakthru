@@ -326,7 +326,7 @@ class Board(object):
             if self.is_move_valid(src,dest) != True:
                 print("Irregular move!")
                 return False
-
+            # print(self.moves_left)
             self.end_time = time.time()
             # Make move
             self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
@@ -341,6 +341,7 @@ class Board(object):
 
             # Flip turn to other player
             if self.moves_left < 1:
+                # print("switch player")
                 self.switch_player_at_turn()
             return True
 

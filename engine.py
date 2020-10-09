@@ -1,4 +1,5 @@
 from transition import Board
+from negamax import NegaMax
 import random
 
 class Agent(object):
@@ -9,6 +10,7 @@ class Agent(object):
         # self.state = board.get_state()
         self.turn = turn
         self.type = type
+        self.state = None
 
     # is this really necessary?
     # def update_state(self,new_state):
@@ -20,8 +22,41 @@ class Agent(object):
     #         print("Error updating agent's state: {}".format(e))
     #         return False
 
-    def next_move_engine(self,turn):
+    #  Function below can be improved when function is_move_valid is changed to not change the move_left
+    def next_move_engine(self,board,depth = 1):
         # Start alpha-beta-algorithm
+        self.state = board
+        agent = NegaMax(self.state,self.turn)
+        value, move_list = agent.get_val(self.turn,depth,-30,30)
+        src_1 = move_list[0][0]
+        dest_1 = move_list[0][1]
+        if move_list[1] != []:
+            src_2 = move_list[1][0]
+            dest_2 = move_list[1][1]
+        else:
+            src_2 = None
+            dest_2 = None
+        # Check if move is valid otherwise return random move
+        if self.state.is_move_valid(src_1,dest_1):
+            # print(self.state.get_moves_left())
+            if self.state.get_moves_left() == 1 and src_2 != None and self.state.is_move_valid(src_2,dest_2):
+                # print("2nd move correct")
+                # print(src_1,dest_1,src_2,dest_2)
+                self.state.switch_player_at_turn()
+                self.state.switch_player_at_turn()
+                return src_1, dest_1, src_2, dest_2
+            elif self.state.get_moves_left() == 0 and src_2 == None:
+                # print("Only 1 move")
+                # print(src_1, dest_1, src_2, dest_2)
+                self.state.switch_player_at_turn()
+                self.state.switch_player_at_turn()
+                return src_1, dest_1, src_2, dest_2
+        print("engine move invalid:")
+        print(move_list)
+        print("returning random move")
+        self.state.switch_player_at_turn()
+        self.state.switch_player_at_turn()
+        return self.next_move_rand(self.turn,self.state)
 
         # NEED TO BE ADAPTED
         # # Initialize a minimax tree.
@@ -61,7 +96,8 @@ class Agent(object):
         if self.type == 'manual':
             return self.next_move_manual(board)
         elif self.type == 'engine':
-            src_1, dest_1, src_2, dest_2 = self.next_move_rand(self.turn,board) # NEEDS TO BE CHANGED TO PROPER ENGINE
+            # src_1, dest_1, src_2, dest_2 = self.next_move_rand(self.turn,board) # NEEDS TO BE CHANGED TO PROPER ENGINE
+            src_1, dest_1, src_2, dest_2 = self.next_move_engine(board)
             print("Engine gives:")
             print("{0} {1} {2} {3}".format(chr(src_1[1]+97),11-src_1[0],chr(dest_1[1]+97),11-dest_1[0]))
             if src_2 != None:

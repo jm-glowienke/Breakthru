@@ -81,6 +81,8 @@ try:
                 print("Player Gold moves")
                 # print(board.get_number_pieces('gold'))
                 src_1,dest_1,src_2,dest_2 = GOLD.get_move(board)
+                # print(src_1,dest_1,src_2,dest_2)
+                # print(board.get_moves_left())
             elif board.get_turn() == 'silver':
                 print("Player Silver moves")
                 # print(board.get_number_pieces('silver'))
@@ -101,6 +103,7 @@ try:
             board.show_state()
         except ValueError:
             print("Try again")
+            board.show_state()
     tools.save_game_log(board.get_history())
     print("Player {0} wins the game!".format(board.get_winner()))
 except KeyboardInterrupt:
