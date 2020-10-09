@@ -17,6 +17,7 @@ class NegaMax(object):
         else: raise Exception
 
     def get_val(self,player,depth,alpha,beta):
+        # print(alpha,beta)
         # run NegaMax algorithm
         if depth == 0 or self.state.is_terminal() == True:
             return self.utility(self.state,player),[]
@@ -25,11 +26,13 @@ class NegaMax(object):
         best_move = []
         childNodes = self.state.get_all_moves(player)
         for child in childNodes:
-            print(child)
+            # print(player)
+            # print(child)
             src = child[0]
             dest = child[1]
             dest_object = self.state.get_board()[dest[0]][dest[1]]
             moves_left = self.state.make_simulated_move(player, src, dest, 2)
+            # self.state.show_state()
             if moves_left == 0: # single move perfomed
                 value, best_sub_move = self.get_val(self.get_opponent(player),depth - 1,-beta,-alpha)
                 value = -value
@@ -37,9 +40,12 @@ class NegaMax(object):
                 if value > self.score: self.score = value
                 if self.score > alpha:
                     alpha = self.score
-                    if self.score >= beta: break
+                    # if self.score >= beta: break
                     best_move = [[src,dest]]
                     best_move.append(best_sub_move)
+                if self.score >= beta:
+                    # print("break")
+                    break
             elif moves_left == 1: # two moves performed
                 for child2 in child[2]:
                     src_2 = child2[0]
@@ -47,16 +53,19 @@ class NegaMax(object):
                     dest_object_2 = self.state.get_board()[dest_2[0]][dest_2[1]]
                     moves_left = self.state.make_simulated_move(player,src_2,dest_2,1)
 
+                    # self.state.show_state()
                     value, best_sub_move = self.get_val(self.get_opponent(player),depth-1,-beta,-alpha)
                     value = -value
                     self.state.undo_simulated_move(src_2,dest_2,dest_object_2)
                     if value > self.score: self.score = value
                     if self.score > alpha:
                         alpha = self.score
-                        if self.score >= beta: break
                         best_move = [[src,dest]]
                         best_move.append([src_2,dest_2])
                         best_move.append(best_sub_move)
+                    if self.score >= beta:
+                        # print("break")
+                        break
                 self.state.undo_simulated_move(src,dest,dest_object)
         return self.score, best_move
 
@@ -125,7 +134,7 @@ class NegaMax(object):
                             k += 1
 
                 # add random value to prevent precise equal values
-            utility =  (number_ships_left - 3*flag_attack - attack + 2 * direct_access + round(random.uniform(0,1),2))
+            utility =  (number_ships_left - 3*flag_attack - attack + 2 * direct_access)# + round(random.uniform(0,1),2))
             return utility
 
         elif player == 'silver':
@@ -193,5 +202,5 @@ class NegaMax(object):
                                 k += 1
 
                 # add random value to prevent precise equal values
-            utility =  (number_ships_left + 2*flag_attack + attack - 4 * direct_access + round(random.uniform(0,1),2))
+            utility =  (number_ships_left + 2*flag_attack + attack - 4 * direct_access)# + round(random.uniform(0,1),2))
             return utility
