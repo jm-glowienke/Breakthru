@@ -1,11 +1,16 @@
 from transition import Board
 from engine import Agent
 import tools
-import os
+from os import system, name
 import time
 
 # Initialization
-os.system('clear')
+    # for windows
+if name == 'nt':
+    system('cls')
+    # for mac and linux(here, os.name is 'posix')
+else:
+    system('clear')
 board = Board(tools.initial_state())
 silver_agents = {1: Agent('manual','silver'),
                 2: Agent('manual','silver'),
