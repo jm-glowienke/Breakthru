@@ -20,7 +20,7 @@ def initial_state():
 # create subdirectory
 def save_game_log(history):
     if not os.path.isdir("./logs/"): # if not present create folder to store logs
-        os.makedirs("./logs1/")
+        os.makedirs("./logs/")
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     with open('./logs/log_'+timestamp, 'w') as f:
         f.write('log_'+timestamp + '\n')

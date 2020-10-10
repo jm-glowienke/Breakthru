@@ -57,7 +57,6 @@ class NegaMax(object):
                     dest_2 = child2[1]
                     dest_object_2 = self.state.get_board()[dest_2[0]][dest_2[1]]
                     moves_left = self.state.make_simulated_move(player,src_2,dest_2,1)
-
                     # self.state.show_state()
                     value, best_sub_move = self.get_val(self.get_opponent(player),depth-1,-beta,-alpha)
                     value = -value
@@ -150,7 +149,7 @@ class NegaMax(object):
                         if pos[0]+1 <= 10 and pos[1]+1 <= 10 \
                         and state.get_player_at_field([pos[0]+1,pos[1]+1]) == player:
                             flag_covered += 1
-            utility =  (number_ships_left - 4*flag_attack - attack + 2 * direct_access + 3 * flag_covered)
+            utility =  (number_ships_left - 4*flag_attack - attack + 6 * direct_access + 3 * flag_covered)
             return utility
 
         elif player == 'silver':
@@ -217,5 +216,7 @@ class NegaMax(object):
                                 if pos[1] + k == 10:
                                     direct_access += 1
                                 k += 1
-            utility =  (number_ships_left + 2*flag_attack + attack - 6 * direct_access - 1 * gold_number_ships_left)
+                    else:
+                        k+= 1
+            utility =  number_ships_left + 4*flag_attack + attack - 6 * direct_access# - 1 * gold_number_ships_left
             return utility
