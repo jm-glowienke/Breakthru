@@ -8,7 +8,7 @@ import time
     # for windows
 if name == 'nt':
     system('cls')
-    # for mac and linux(here, os.name is 'posix')
+    # for mac and linux
 else:
     system('clear')
 board = Board(tools.initial_state())
@@ -57,7 +57,7 @@ elif choice == 2:
             SILVER = silver_agents[type]
             board.save_type(type)
             if log[0][0][0] == 99:
-                print("Gold skipped first move")
+                print("\n Gold skipped first move")
                 board.switch_player_at_turn()
                 board.gold_skips()
                 del log[0]
@@ -65,6 +65,8 @@ elif choice == 2:
             for i in range(0,len(log)):
                 turn = board.get_turn()
                 print("Player {} moves".format(turn.upper()))
+                print("from {0}{1} to {2}{3}".format(chr(log[i][0][1]+97).upper(),11-log[i][0][0],\
+                chr(log[i][1][1]+97).upper(),11-log[i][1][0]))
                 board.make_a_move(board.get_turn(),log[i][0],log[i][1],0,elapsed_time = log[i][2]+0.1)
                 board.show_state()
             print("\n Continuing old game...")
@@ -83,15 +85,10 @@ try:
             start_time = time.time()
             if board.get_turn() == 'gold':
                 print("Player Gold moves")
-                # print(board.get_number_pieces('gold'))
                 src_1,dest_1,src_2,dest_2,type_1,type_2 = GOLD.get_move(board,N = N)
-                # print(src_1,dest_1,src_2,dest_2)
-                # print(board.get_moves_left())
             elif board.get_turn() == 'silver':
                 print("Player Silver moves")
-                # print(board.get_number_pieces('silver'))
                 src_1,dest_1,src_2, dest_2,type_1,type_2 = SILVER.get_move(board,N = N)
-            # src, dest = board.enter_manual_move()
             if src_1 == None:
                 print("Undoing last move...")
                 if board.undo_last_move() == False:
@@ -112,9 +109,11 @@ try:
             board.show_state()
     tools.save_game_log(board.get_history())
     print("Player {0} wins the game!".format(board.get_winner()))
+    print("\nPress any key to continue...")
+    input()
 except KeyboardInterrupt:
     tools.save_game_log(board.get_history())
     print("\n Game interrupted! Log is saved.")
-# except: #any unexpected error occurs during game play # disable for testing purposes
-#     tools.save_game_log(board.get_history())
-#     print("\n An error occurred! Log is saved!")
+except: #any unexpected error occurs during game play # disable for testing purposes
+    tools.save_game_log(board.get_history())
+    print("\n An error occurred! Log is saved!")
