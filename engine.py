@@ -25,8 +25,7 @@ class Agent(object):
     #  Function below can be improved when function is_move_valid is changed to not change the move_left
     def next_move_engine(self,board,depth = 1):
         # Start alpha-beta-algorithm
-        self.state = board
-        agent = NegaMax(self.state,self.turn)
+        agent = NegaMax(board,self.turn)
         value, move_list = agent.get_val(self.turn,depth,-30,30)
         print("Value of move: {}".format(value))
         src_1 = move_list[0][0]
@@ -37,27 +36,51 @@ class Agent(object):
         else:
             src_2 = None
             dest_2 = None
+            type_2 = None
         # Check if move is valid otherwise return random move
-        if self.state.is_move_valid(src_1,dest_1):
-            # print(self.state.get_moves_left())
-            if self.state.get_moves_left() == 1 and src_2 != None and self.state.is_move_valid(src_2,dest_2):
-                # print("2nd move correct")
-                # print(src_1,dest_1,src_2,dest_2)
-                self.state.switch_player_at_turn()
-                self.state.switch_player_at_turn()
-                return src_1, dest_1, src_2, dest_2
-            elif self.state.get_moves_left() == 0 and src_2 == None:
-                # print("Only 1 move")
-                # print(src_1, dest_1, src_2, dest_2)
-                self.state.switch_player_at_turn()
-                self.state.switch_player_at_turn()
-                return src_1, dest_1, src_2, dest_2
-        print("engine move invalid:")
-        print(move_list)
+        correct_1, type_1 = board.is_move_valid(src_1,dest_1,2)
+        if correct_1 != True:
+            print("engine move invalid:")
+            print(move_list)
+            print("returning random move")
+            return self.next_move_rand(self.turn,board)
+        elif correct_1 == True:
+            if type_1 == 13:
+                dest_object = board.get_board()[dest_1[0]][dest_1[1]]
+                board.make_simulated_move(self.turn,src_1,dest_1,1)
+                correct_2, type_2 = board.is_move_valid(src_2,dest_2,1)
+                board.undo_simulated_move(src_1,dest_1,dest_object)
+                if correct_2 != True:
+                    print("engine move invalid:")
+                    print(move_list)
+                    print("returning random move")
+                    return self.next_move_rand(self.turn,board)
+            return src_1, dest_1, src_2, dest_2, type_1, type_2
         print("returning random move")
-        self.state.switch_player_at_turn()
-        self.state.switch_player_at_turn()
-        return self.next_move_rand(self.turn,self.state)
+        return self.next_move_rand(self.turn,board)
+
+        # below can be deleted
+        # if correct_1 == True:
+        #     # print(self.state.get_moves_left())
+        #     if type_1 == 10:
+        #         correct_2, type_2 = self.state.is_move_valid(src_1,dest_1,2)
+        #         # print("2nd move correct")
+        #         # print(src_1,dest_1,src_2,dest_2)
+        #         self.state.switch_player_at_turn()
+        #         self.state.switch_player_at_turn()
+        #         return src_1, dest_1, src_2, dest_2
+        #     elif self.state.get_moves_left() == 0 and src_2 == None:
+        #         # print("Only 1 move")
+        #         # print(src_1, dest_1, src_2, dest_2)
+        #         self.state.switch_player_at_turn()
+        #         self.state.switch_player_at_turn()
+        #         return src_1, dest_1, src_2, dest_2
+        # print("engine move invalid:")
+        # print(move_list)
+        # print("returning random move")
+        # self.state.switch_player_at_turn()
+        # self.state.switch_player_at_turn()
+        # return self.next_move_rand(self.turn,self.state)
 
         # NEED TO BE ADAPTED
         # # Initialize a minimax tree.
@@ -81,35 +104,48 @@ class Agent(object):
         else:
             src_2, dest_2 = None, None
 
-        return src_1, dest_1, src_2, dest_2
+        return src_1, dest_1, src_2, dest_2, None, None
 
     def next_move_manual(self,board):
         src_1, dest_1 = board.enter_manual_move()
-        if abs(src_1[0]-dest_1[0]) == 1 and abs(src_1[1]-dest_1[1]) == 1:
-            return src_1, dest_1, None, None
-        elif board.get_board()[src_1[0]][src_1[1]] == 3:
-            return src_1, dest_1, None, None
-        else:
+        correct_1, type_1 = board.is_move_valid(src_1,dest_1)
+        if correct_1 != True:
+            raise ValueError
+        if type_1 == 13:
+            dest_object = board.get_board()[dest_1[0]][dest_1[1]]
+            board.make_simulated_move(self.turn,src_1,dest_1,1)
             src_2, dest_2 = board.enter_manual_move()
-            return src_1, dest_1, src_2, dest_2
+            correct_2, type_2 = board.is_move_valid(src_2,dest_2,1)
+            board.undo_simulated_move(src_1,dest_1,dest_object)
+            if correct_2 != True:
+                raise ValueError
+            return src_1, dest_1, src_2, dest_2, type_1, type_2
+        return src_1, dest_1, None, None, type_1, None
+        # if abs(src_1[0]-dest_1[0]) == 1 and abs(src_1[1]-dest_1[1]) == 1:
+        #     return src_1, dest_1, None, None
+        # elif board.get_board()[src_1[0]][src_1[1]] == 3:
+        #     return src_1, dest_1, None, None
+        # else:
+        #     src_2, dest_2 = board.enter_manual_move()
+
 
     def get_move(self,board,N = None):
         if self.type == 'manual':
             return self.next_move_manual(board)
         elif self.type == 'engine':
             if N == 0 and self.turn == 'gold':
-                src_1, dest_1, src_2, dest_2 = [3,4],[4,4],[3,6],[4,6]
+                src_1, dest_1, src_2, dest_2,type_1, type_2 = [3,4],[4,4],[3,6],[4,6],13,13
             elif N == 2 and self.turn == 'gold':
-                src_1, dest_1, src_2, dest_2 = [7,4],[6,4],[7,6],[6,6]
+                src_1, dest_1, src_2, dest_2,type_1, type_2 = [7,4],[6,4],[7,6],[6,6],13,13
             # elif self.turn == 'silver':
             else:
                 # src_1, dest_1, src_2, dest_2 = self.next_move_rand(self.turn,board) # NEEDS TO BE CHANGED TO PROPER ENGINE
-                src_1, dest_1, src_2, dest_2 = self.next_move_engine(board)
+                src_1, dest_1, src_2, dest_2,type_1,type_2 = self.next_move_engine(board)
             print("Engine gives:")
             print("{0} {1} {2} {3}".format(chr(src_1[1]+97),11-src_1[0],chr(dest_1[1]+97),11-dest_1[0]))
             if src_2 != None:
                 print("{0} {1} {2} {3}".format(chr(src_2[1]+97),11-src_2[0],chr(dest_2[1]+97),11-dest_2[0]))
-            return src_1, dest_1, src_2, dest_2
+            return src_1, dest_1, src_2, dest_2, type_1, type_2
         else:
             print("Something wrong with type of agent")
             raise Exception

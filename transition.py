@@ -206,79 +206,85 @@ class Board(object):
             n += 1
         return moves_found
 
-    def is_move_valid(self, src, dest):
+    def is_move_valid(self, src, dest, moves_left = None):
         # returns whether move is valid and adapts variable self.moves_left
-        type = -99 # 10 = normal, 11 = capture
-        old_moves_left = self.moves_left
+        type = None # 13 = normal, 10 = capture, 12 = flag_normal, 11 = flag_capture
+        if moves_left == None:
+            moves_left = self.moves_left
         # Check for basic incorrects
-        if src[0] == dest[0] and src[1] == dest[1]: # Eliminate when source equals destination
+        if self.get_player_at_field(src) != self.turn:
+            print("Not your stone!")
+            return False, type
+        elif src[0] == dest[0] and src[1] == dest[1]: # Eliminate when source equals destination
             print("source == destination")
-            return False
+            return False, type
         elif self.get_player_at_field(dest) == self.turn:
             print("destination field has own stone")
-            return False
+            return False, type
         elif self.moves_left == 1 and src == self.last_dest:
             print("same ship cannot move twice")
-            return False
+            return False, type
 
         # Determine type of move, check if enough moves left, adapt moves left
-        if self.get_player_at_field(dest) == self.opponent and self.moves_left < 2:
-            self.moves_left = old_moves_left
+        if self.get_player_at_field(dest) == self.opponent and moves_left < 2:
             print("2nd move cannot be a capture")
-            return False
+            return False, type
         elif self.get_player_at_field(dest) == self.opponent:
-            type = 11
-            self.moves_left -= 2
-        elif self.board[src[0]][src[1]] == 3 and self.moves_left < 2:
+            type = 10
+        elif self.board[src[0]][src[1]] == 3 and moves_left < 2:
             print("2nd move cannot move the flagship")
-            self.moves_left = old_moves_left
-            return False
+            return False, type
         elif self.board[src[0]][src[1]] == 3 and self.get_player_at_field(dest) == self.opponent:
             type = 11
-            self.moves_left -= 2
         elif self.board[src[0]][src[1]] == 3 and self.get_player_at_field(dest) == 'empty':
-            type = 10
-            self.moves_left -= 2
+            type = 12
         elif self.get_player_at_field(dest) == 'empty':
-            type = 10
-            self.moves_left -= 1
+            type = 13
         else:
             print("Move definition went wrong")
             raise Exception
 
         # Check if move is valid
-        if type == 11: # check for capture move
+        if type == 10 or type == 11: # check for capture move
             if abs(src[0] - dest[0]) == 1 and abs(src[1] - dest[1]) == 1:
-                return True
+                return True, type
             else:
                 print("Illegal capture move")
-                self.moves_left = old_moves_left
-                return False
-        elif type == 10: # check for regular move
+                return False, type
+        elif type == 13 or type == 12: # check for regular move
             if src[0] == dest[0]: # horizontal move
                 for i in range(min(src[1],dest[1])+1,max(src[1],dest[1])):
                     if self.board[src[0]][i] != '.':
                         print("Cannot jump over stones!")
-                        self.moves_left = old_moves_left
-                        return False
-                return True
+                        return False, type
+                return True, type
             elif src[1] == dest[1]: # vertical move
                 for i in range(min(src[0],dest[0])+1,max(src[0],dest[0])):
                     if self.board[i][src[1]] != '.':
                         print("Cannot jump over stones!")
-                        self.moves_left = old_moves_left
-                        return False
-                return True
+                        return False, type
+                return True, type
             else:
                 print("Regular move went wrong")
-                return False
+                return False, type
         else:
             print("Type not correctly defined")
             raise Exception
 
-        self.moves_left = old_moves_left
         print("Move validation went completely wrong")
         return False
+
+    def adapt_moves_left(self,type):
+        if type == 10:
+            self.moves_left -= 2
+        elif type == 12 or type == 11:
+            self.moves_left -= 2
+        elif type == 13:
+            self.moves_left -= 1
+        else:
+            print("Irregular Type found")
+            raise Exception
+        return
 
     def get_player_at_field(self,pos):
         x = self.board[pos[0]][pos[1]]
@@ -309,10 +315,12 @@ class Board(object):
                 break
             except IndexError:
                 print("Invalid input! Try again and remember expected input format: <Z 99 Z 99>!")
+            except ValueError:
+                print("Invalid input! Try again and remember expected input format: <Z 99 Z 99>!")
         # return integer lists for positions on board
         return src, dest
 
-    def make_a_move(self,player,src,dest,start_time,elapsed_time = 0):
+    def make_a_move(self,player,src,dest,start_time,elapsed_time = 0,type = None):
         try:
             #validate turn - check if correct stone at starting field
             if player != self.get_player_at_field(src):
@@ -320,9 +328,13 @@ class Board(object):
                 return False
 
             # validate move
-            if self.is_move_valid(src,dest) != True:
-                print("Irregular move!")
-                return False
+            if type == None:
+                correct, type = self.is_move_valid(src,dest)
+                if correct != True:
+                    print("Irregular move!")
+                    return False
+            # adapt moves_left
+            self.adapt_moves_left(type)
             # print(self.moves_left)
             self.end_time = time.time()
             # Make move
@@ -461,11 +473,6 @@ class Board(object):
 
     def make_simulated_move(self,player,src,dest,moves_left):
         try:
-            # validate move -- can be deleted later, just for control purposes right now
-            # if self.is_move_valid(src,dest) != True:
-            #     print("Irregular move!")
-            #     return False
-
             # Determine type of move, adapt moves left
             if self.get_player_at_field(dest) == self.get_opponent(player):
                 moves_left -= 2
