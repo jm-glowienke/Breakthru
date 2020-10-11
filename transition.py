@@ -134,34 +134,40 @@ class Board(object):
 
         # get all possible first moves
         for pos in all_positions:
+            if self.board[pos[0]][pos[1]] == 3: # flagship has other type code
+                type1 = 11
+                type2 = 9 # other type then elsewhere!!
+            else:
+                type1 = 10
+                type2 = 13
             if pos[0]+1 <= 10 and pos[1]-1>=0 \
             and self.get_player_at_field([pos[0]+1,pos[1]-1]) == opp:
-                moves_found.append([pos,[pos[0]+1,pos[1]-1]])
+                moves_found.append([pos,[pos[0]+1,pos[1]-1],type1])
             if pos[0]-1 >= 0 and pos[1]-1 >= 0 \
             and self.get_player_at_field([pos[0]-1,pos[1]-1]) == opp:
-                moves_found.append([pos,[pos[0]-1,pos[1]-1]])
+                moves_found.append([pos,[pos[0]-1,pos[1]-1],type1])
             if pos[0]-1 >= 0 and pos[1]+1 <= 10 \
             and self.get_player_at_field([pos[0]-1,pos[1]+1]) == opp:
-                moves_found.append([pos,[pos[0]-1,pos[1]+1]])
+                moves_found.append([pos,[pos[0]-1,pos[1]+1],type1])
             if pos[0]+1 <= 10 and pos[1]+1 <= 10 \
             and self.get_player_at_field([pos[0]+1,pos[1]+1]) == opp:
-                moves_found.append([pos,[pos[0]+1,pos[1]+1]])
+                moves_found.append([pos,[pos[0]+1,pos[1]+1],type1])
             # check for regular moves
             k = 1
             while (pos[0] - k) >= 0 and self.get_player_at_field([pos[0]-k,pos[1]]) == 'empty':
-                moves_found.append([pos,[pos[0]-k,pos[1]]])
+                moves_found.append([pos,[pos[0]-k,pos[1]],type2])
                 k += 1
             k = 1
             while (pos[0] + k) <= 10 and self.get_player_at_field([pos[0]+k,pos[1]]) == 'empty':
-                moves_found.append([pos,[pos[0]+k,pos[1]]])
+                moves_found.append([pos,[pos[0]+k,pos[1]],type2])
                 k += 1
             k = 1
             while (pos[1] - k) >= 0 and self.get_player_at_field([pos[0],pos[1]-k]) == 'empty':
-                moves_found.append([pos,[pos[0],pos[1]-k]])
+                moves_found.append([pos,[pos[0],pos[1]-k],type2])
                 k += 1
             k = 1
             while (pos[1] + k) <= 10 and self.get_player_at_field([pos[0],pos[1]+k]) == 'empty':
-                moves_found.append([pos,[pos[0],pos[1]+k]])
+                moves_found.append([pos,[pos[0],pos[1]+k],type2])
                 k += 1
             # get second moves, if possible
         n = 0 # used to append 2nd moves to first moves in list
@@ -185,22 +191,22 @@ class Board(object):
                     continue
                 k = 1
                 while (pos[0] - k) >= 0 and self.get_player_at_field([pos[0]-k,pos[1]]) == 'empty':
-                    moves_found[n][2].append([pos,[pos[0]-k,pos[1]]])
+                    moves_found[n][3].append([pos,[pos[0]-k,pos[1]]])
                     k += 1
 
                 k = 1
                 while (pos[0] + k) <= 10 and self.get_player_at_field([pos[0]+k,pos[1]]) == 'empty':
-                    moves_found[n][2].append([pos,[pos[0]+k,pos[1]]])
+                    moves_found[n][3].append([pos,[pos[0]+k,pos[1]]])
                     k += 1
 
                 k = 1
                 while (pos[1] - k) >= 0 and self.get_player_at_field([pos[0],pos[1]-k]) == 'empty':
-                    moves_found[n][2].append([pos,[pos[0],pos[1]-k]])
+                    moves_found[n][3].append([pos,[pos[0],pos[1]-k]])
                     k += 1
 
                 k = 1
                 while (pos[1] + k) <= 10 and self.get_player_at_field([pos[0],pos[1]+k]) == 'empty':
-                    moves_found[n][2].append([pos,[pos[0],pos[1]+k]])
+                    moves_found[n][3].append([pos,[pos[0],pos[1]+k]])
                     k += 1
             self.undo_simulated_move(src,dest,dest_object)
             n += 1

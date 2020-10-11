@@ -59,7 +59,7 @@ class Agent(object):
         n_2 = len(moves[k][2])
         if n_2 !=0:
             l = random.randint(0,n_2-1)
-            src_2, dest_2 = moves[k][2][l][0], moves[k][2][l][1]
+            src_2, dest_2 = moves[k][3][l][0], moves[k][3][l][1]
         else:
             src_2, dest_2 = None, None
 

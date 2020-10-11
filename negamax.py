@@ -27,17 +27,15 @@ class NegaMax(object):
 
         best_move = []
         childNodes = self.state.get_all_moves(player)
+        childNodes = self.order_moves(childNodes)
         for child in childNodes:
             if time.time() - self.time > 30:
                 print("Search timed out!")
                 return self.score, best_move
-            # print(player)
-            # print(child)
             src = child[0]
             dest = child[1]
             dest_object = self.state.get_board()[dest[0]][dest[1]]
             moves_left = self.state.make_simulated_move(player, src, dest, 2)
-            # self.state.show_state()
             if moves_left == 0: # single move perfomed
                 value, best_sub_move = self.get_val(self.get_opponent(player),depth - 1,-beta,-alpha)
                 value = -value
@@ -45,19 +43,16 @@ class NegaMax(object):
                 if value > self.score: self.score = value
                 if self.score > alpha:
                     alpha = self.score
-                    # if self.score >= beta: break
                     best_move = [[src,dest]]
                     best_move.append(best_sub_move)
                 if self.score >= beta:
-                    # print("break")
                     break
             elif moves_left == 1: # two moves performed
-                for child2 in child[2]:
+                for child2 in child[3]:
                     src_2 = child2[0]
                     dest_2 = child2[1]
                     dest_object_2 = self.state.get_board()[dest_2[0]][dest_2[1]]
                     moves_left = self.state.make_simulated_move(player,src_2,dest_2,1)
-                    # self.state.show_state()
                     value, best_sub_move = self.get_val(self.get_opponent(player),depth-1,-beta,-alpha)
                     value = -value
                     self.state.undo_simulated_move(src_2,dest_2,dest_object_2)
@@ -68,14 +63,14 @@ class NegaMax(object):
                         best_move.append([src_2,dest_2])
                         best_move.append(best_sub_move)
                     if self.score >= beta:
-                        # print("break")
                         break
                 self.state.undo_simulated_move(src,dest,dest_object)
         return self.score, best_move
 
 
-    def order_moves(childNodes):
-        return False
+    def order_moves(self,moves):
+        moves.sort(key = lambda x: x[2])
+        return moves
 
     def utility(self,state,player):
         if player == 'gold':
@@ -91,6 +86,7 @@ class NegaMax(object):
                 flag_covered = 0
                 positions = state.get_all_positions(player)
                 number_ships_left = len(positions)
+                silver_number_ships_left = state.get_number_pieces('silver')
                 for pos in positions:
                     if pos[0]+1 <= 10 and pos[1]-1>=0 \
                     and state.get_player_at_field([pos[0]+1,pos[1]-1]) == opp:
@@ -149,7 +145,7 @@ class NegaMax(object):
                         if pos[0]+1 <= 10 and pos[1]+1 <= 10 \
                         and state.get_player_at_field([pos[0]+1,pos[1]+1]) == player:
                             flag_covered += 1
-            utility =  (number_ships_left - 4*flag_attack - attack + 10 * direct_access + 3 * flag_covered)
+            utility =  number_ships_left - 4*flag_attack - attack + 10 * direct_access + 3 * flag_covered - silver_number_ships_left
             return utility
 
         elif player == 'silver':
@@ -162,6 +158,7 @@ class NegaMax(object):
                 flag_attack = 0
                 attack = 0
                 direct_access = 0
+                flag_covered = 0
                 positions = state.get_all_positions(player)
                 number_ships_left = len(positions)
                 gold_number_ships_left = state.get_number_pieces('gold')
@@ -216,7 +213,19 @@ class NegaMax(object):
                                 if pos[1] + k == 10:
                                     direct_access += 1
                                 k += 1
+                            if pos[0]+1 <= 10 and pos[1]-1>=0 \
+                            and state.get_player_at_field([pos[0]+1,pos[1]-1]) == opp:
+                                flag_covered += 1
+                            if pos[0]-1 >= 0 and pos[1]-1 >= 0 \
+                            and state.get_player_at_field([pos[0]-1,pos[1]-1]) == opp:
+                                flag_covered += 1
+                            if pos[0]-1 >= 0 and pos[1]+1 <= 10 \
+                            and state.get_player_at_field([pos[0]-1,pos[1]+1]) == opp:
+                                flag_covered += 1
+                            if pos[0]+1 <= 10 and pos[1]+1 <= 10 \
+                            and state.get_player_at_field([pos[0]+1,pos[1]+1]) == opp:
+                                flag_covered += 1
                     else:
                         k+= 1
-            utility =  number_ships_left + 4*flag_attack + attack - 10 * direct_access# - 1 * gold_number_ships_left
+            utility =  number_ships_left + 4*flag_attack + attack - 10 * direct_access - 3 * flag_covered - gold_number_ships_left
             return utility

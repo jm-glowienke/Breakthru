@@ -96,7 +96,6 @@ try:
                     raise Exception
                 board.show_state()
                 raise ValueError
-            print(type_1,type_2)
             if board.make_a_move(board.get_turn(),src_1, dest_1,start_time,type=type_1) == False:
                 raise ValueError
             if src_2 != None:
