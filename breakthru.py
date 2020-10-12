@@ -114,6 +114,6 @@ try:
 except KeyboardInterrupt:
     tools.save_game_log(board.get_history())
     print("\n Game interrupted! Log is saved.")
-# except: #any unexpected error occurs during game play # disable for testing purposes
-#     tools.save_game_log(board.get_history())
-#     print("\n An error occurred! Log is saved!")
+except: #any unexpected error occurs during game play # disable for testing purposes
+    tools.save_game_log(board.get_history())
+    print("\n An error occurred! Log is saved!")
