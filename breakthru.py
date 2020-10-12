@@ -23,6 +23,7 @@ gold_agents = {1: Agent('manual','gold'),
 
 
 # Game SetUp
+N = 0
 print("Welcome to Breakthru! \n Remember: You can use <-1 0 0 0> to undo last move \
 \n Press 1 for new game and 2 to continue old game:")
 choice = int(input())
@@ -69,6 +70,7 @@ elif choice == 2:
                 chr(log[i][1][1]+97).upper(),11-log[i][1][0]))
                 board.make_a_move(board.get_turn(),log[i][0],log[i][1],0,elapsed_time = 0.1)
                 board.show_state()
+            N = len(log)
             print("\n Continuing old game...")
             break
         except FileNotFoundError:
@@ -78,7 +80,6 @@ else: raise Exception
 # Here the real game play is happening:
 # Engine interacts with manual player
 # Board enforces the rules
-N = 0
 try:
     while board.is_terminal() != True:
         try:
