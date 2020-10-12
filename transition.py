@@ -51,9 +51,6 @@ class Board(object):
     def get_turn(self):
         return self.turn
 
-    def get_current_state(self):
-        return current_state
-
     def get_moves_left(self):
         return self.moves_left
 
@@ -381,18 +378,9 @@ class Board(object):
     def undo_last_move(self):
         src = self.history[-1][1] # opposite direction
         dest = self.history[-1][0]
-        elapsed_time = self.history[-1][2]
         del self.history[-1]
         self.winner = None
 
-        # reset total elapsed time per player
-        if self.turn == self.playerG:
-            self.elapsed_timeG -= int(elapsed_time)
-
-        elif self.turn == self.playerS:
-            self.elapsed_timeS -= int(elapsed_time)
-        # print("Silver:%s " % self.elapsed_timeS)
-        # print("Gold:%s " % self.elapsed_timeG)
         if self.moves_left == 1:
             self.board[dest[0]][dest[1]] = self.board[src[0]][src[1]]
             self.board[src[0]][src[1]] = '.' #reset old position
