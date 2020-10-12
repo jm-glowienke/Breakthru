@@ -66,17 +66,6 @@ class Board(object):
         else: raise Exception("Player not existent")
         return
 
-    def get_remaining_pieces(self,player):
-        difference = None
-
-        if player == self.playerG:
-            difference = self.total_num_playerG - self.get_number_pieces(player)
-        elif player == self.playerS:
-            difference = self.total_num_playerS - self.get_number_pieces(player)
-        else: raise Exception("Player not existent")
-
-        return difference
-
     def get_number_pieces(self,player):
         counter = 0
         if player == self.playerG:
@@ -489,78 +478,3 @@ class Board(object):
         self.board[src[0]][src[1]] = self.board[dest[0]][dest[1]]
         self.board[dest[0]][dest[1]] = dest_object
         return True
-
-    # def is_move_valid2(self, src, dest,moves_left):
-    #     # not really necessary, just for testing puposes
-    #     # returns whether move is valid and adapts variable self.moves_left
-    #     type = -99 # 10 = normal, 11 = capture
-    #     old_moves_left = moves_left
-    #     # Check for basic incorrects
-    #     if src[0] == dest[0] and src[1] == dest[1]: # Eliminate when source equals destination
-    #         print("source == destination")
-    #         return False, moves_left
-    #     elif self.get_player_at_field(dest) == self.turn:
-    #         print("destination field has own stone")
-    #         return False, moves_left
-    #     elif moves_left == 1 and src == self.last_dest:
-    #         print("same ship cannot move twice")
-    #         return False, moves_left
-    #
-    #     # Determine type of move, check if enough moves left, adapt moves left
-    #     if self.get_player_at_field(dest) == self.opponent and moves_left < 2:
-    #         moves_left = old_moves_left
-    #         print("2nd move cannot be a capture")
-    #         return False, moves_left
-    #     elif self.get_player_at_field(dest) == self.opponent:
-    #         type = 11
-    #         moves_left -= 2
-    #     elif self.board[src[0]][src[1]] == 3 and moves_left < 2:
-    #         print("2nd move cannot move the flagship")
-    #         moves_left = old_moves_left
-    #         return False, moves_left
-    #     elif self.board[src[0]][src[1]] == 3 and self.get_player_at_field(dest) == self.opponent:
-    #         type = 11
-    #         moves_left -= 2
-    #     elif self.board[src[0]][src[1]] == 3 and self.get_player_at_field(dest) == 'empty':
-    #         type = 10
-    #         moves_left -= 2
-    #     elif self.get_player_at_field(dest) == 'empty':
-    #         type = 10
-    #         moves_left -= 1
-    #     else:
-    #         print("Move definition went wrong")
-    #         raise Exception
-    #
-    #     # Check if move is valid
-    #     if type == 11: # check for capture move
-    #         if abs(src[0] - dest[0]) == 1 and abs(src[1] - dest[1]) == 1:
-    #             return True, moves_left
-    #         else:
-    #             print("Illegal capture move")
-    #             moves_left = old_moves_left
-    #             return False, moves_left
-    #     elif type == 10: # check for regular move
-    #         if src[0] == dest[0]: # horizontal move
-    #             for i in range(min(src[1],dest[1])+1,max(src[1],dest[1])):
-    #                 if self.board[src[0]][i] != '.':
-    #                     print("Cannot jump over stones!")
-    #                     moves_left = old_moves_left
-    #                     return False, moves_left
-    #             return True, moves_left
-    #         elif src[1] == dest[1]: # vertical move
-    #             for i in range(min(src[0],dest[0])+1,max(src[0],dest[0])):
-    #                 if self.board[i][src[1]] != '.':
-    #                     print("Cannot jump over stones!")
-    #                     moves_left = old_moves_left
-    #                     return False, moves_left
-    #             return True, moves_left
-    #         else:
-    #             print("Regular move went wrong")
-    #             return False, moves_left
-    #     else:
-    #         print("Type not correctly defined")
-    #         raise Exception
-    #
-    #     moves_left = old_moves_left
-    #     print("Move validation went completely wrong")
-    #     return False, moves_left
