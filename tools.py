@@ -1,5 +1,6 @@
 import time
 import os
+import copy
 
 def initial_state():
     # define initial start board: silver = 1, gold = 2, flagship = 3
@@ -56,3 +57,35 @@ def read_game_log(filename):
                 save.append(int(item))
             history.append([[save[0],save[1]],[save[2],save[3]]])
     return type,history
+
+def remove_double_moves(moves):
+    cache = []
+    moves_adapted = copy.deepcopy(moves)
+    if moves_adapted != moves:
+        print("deep copy wrong")
+        return False
+    n = 0
+    for move in moves:
+        if move[3] == []:
+            # no second move, not possible to have double
+            n+= 1
+            continue
+        else:
+            k = 0
+            for move2 in move[3]:
+                if [move2,[move[0],move[1]]] in cache:
+                    del moves_adapted[n][3][k]
+                    continue
+                else:
+                    cache.append([[move[0],move[1]],move2])
+                k += 1
+        n+= 1
+    return moves_adapted
+
+def get_number_moves(moves):
+    n = 0
+    for move in moves:
+        n += len(move[3])
+        if len(move[3]) == 0:
+            n += 1
+    return n
