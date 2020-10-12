@@ -67,13 +67,18 @@ class Agent(object):
 
     def next_move_manual(self,board):
         src_1, dest_1 = board.enter_manual_move()
+        if src_1 == None:
+            return None, None, None, None, None, None
         correct_1, type_1 = board.is_move_valid(src_1,dest_1)
         if correct_1 != True:
             raise ValueError
         if type_1 == 13:
             dest_object = board.get_board()[dest_1[0]][dest_1[1]]
-            board.make_simulated_move(self.turn,src_1,dest_1,1)
             src_2, dest_2 = board.enter_manual_move()
+            if src_2 == None: #quick reset of last move
+                print("Erasing 1st move of player {}".format(board.get_turn().upper()))
+                raise ValueError
+            board.make_simulated_move(self.turn,src_1,dest_1,1)
             correct_2, type_2 = board.is_move_valid(src_2,dest_2,1)
             board.undo_simulated_move(src_1,dest_1,dest_object)
             if correct_2 != True:
@@ -91,6 +96,8 @@ class Agent(object):
                 src_1, dest_1, src_2, dest_2,type_1, type_2 = [7,4],[6,4],[7,6],[6,6],13,13
             else:
                 src_1, dest_1, src_2, dest_2,type_1,type_2 = self.next_move_engine(board)
+                if src_1 == None:
+                    return None, None, None, None, None, None
             print("Engine gives:")
             print("{0} {1} {2} {3}".format(chr(src_1[1]+97),11-src_1[0],chr(dest_1[1]+97),11-dest_1[0]))
             if src_2 != None:

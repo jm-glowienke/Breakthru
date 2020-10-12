@@ -83,6 +83,9 @@ else: raise Exception
 try:
     while board.is_terminal() != True:
         try:
+            # if board.get_moves_left() != 2: # enable for testing purposes
+            #     print("error in moves_left")
+            #     raise Exception
             start_time = time.time()
             if board.get_turn() == 'gold':
                 print("Player Gold moves")
@@ -90,12 +93,28 @@ try:
             elif board.get_turn() == 'silver':
                 print("Player Silver moves")
                 src_1,dest_1,src_2, dest_2,type_1,type_2 = SILVER.get_move(board,N = N)
-            if src_1 == None:
-                print("Undoing last move...")
-                if board.undo_last_move() == False:
+            if src_1 == None: # Code to undo move
+                print("Undoing moves...")
+                # Undo most recent move of other player
+                if board.undo_last_move(type) == False:
                     print("Undoing failed!")
                     raise Exception
-                board.show_state()
+                # Undo 2nd recent move, if present
+                if board.get_moves_left() == 1:
+                    if board.undo_last_move(type) == False:
+                        print("Undoing failed!")
+                        raise Exception
+                N -= 1
+                # If not playing manual-manual, undo own last moves
+                if type != 1 and N > 1:
+                    if board.undo_last_move(type) == False:
+                        print("Undoing failed!")
+                        raise Exception
+                    if board.get_moves_left() == 1:
+                        if board.undo_last_move(type) == False:
+                            print("Undoing failed!")
+                            raise Exception
+                    N -= 1
                 raise ValueError
             if board.make_a_move(board.get_turn(),src_1, dest_1,start_time,type=type_1) == False:
                 raise ValueError
