@@ -1,12 +1,12 @@
 from transition import Board
 import random
 import time
+import tools
 
 class NegaMax(object):
 
     def __init__(self,board,player):
         self.state = board
-        # self.sim_board = self.state.get_board()
         self.player = player
         self.score = -9999999
         self.time = time.time()
@@ -28,6 +28,7 @@ class NegaMax(object):
         best_move = []
         childNodes = self.state.get_all_moves(player)
         childNodes = self.order_moves(childNodes)
+        childNodes = tools.remove_double_moves(childNodes)
         for child in childNodes:
             if time.time() - self.time > 30:
                 print("Search timed out!")
