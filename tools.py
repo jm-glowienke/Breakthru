@@ -26,16 +26,12 @@ def save_game_log(history):
         f.write('log_'+timestamp + '\n')
         f.write('%s \n ' % history[0])
         del(history[0])
-        f.write('src_row src_col dest_row dest_col elapsed_time\n')
+        f.write('src_row src_col dest_row dest_col\n')
         for row in history:
-            k = 0
             for item in row:
-                if k == 2:
-                    f.write('%s \n' % item)
-                    break
                 f.write('%s        ' % item[0])
                 f.write('%s        ' % item[1])
-                k += 1
+            f.write('\n')
             # f.write('%s\n' % row)
     return
 
@@ -58,5 +54,5 @@ def read_game_log(filename):
             save = []
             for item in current:
                 save.append(int(item))
-            history.append([[save[0],save[1]],[save[2],save[3]],save[4]])
+            history.append([[save[0],save[1]],[save[2],save[3]]])
     return type,history

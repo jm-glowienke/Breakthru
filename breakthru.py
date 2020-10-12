@@ -67,7 +67,7 @@ elif choice == 2:
                 print("Player {} moves".format(turn.upper()))
                 print("from {0}{1} to {2}{3}".format(chr(log[i][0][1]+97).upper(),11-log[i][0][0],\
                 chr(log[i][1][1]+97).upper(),11-log[i][1][0]))
-                board.make_a_move(board.get_turn(),log[i][0],log[i][1],0,elapsed_time = log[i][2]+0.1)
+                board.make_a_move(board.get_turn(),log[i][0],log[i][1],0,elapsed_time = 0.1)
                 board.show_state()
             print("\n Continuing old game...")
             break
@@ -113,6 +113,6 @@ try:
 except KeyboardInterrupt:
     tools.save_game_log(board.get_history())
     print("\n Game interrupted! Log is saved.")
-except: #any unexpected error occurs during game play # disable for testing purposes
-    tools.save_game_log(board.get_history())
-    print("\n An error occurred! Log is saved!")
+# except: #any unexpected error occurs during game play # disable for testing purposes
+#     tools.save_game_log(board.get_history())
+#     print("\n An error occurred! Log is saved!")

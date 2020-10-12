@@ -351,10 +351,9 @@ class Board(object):
             # save moves to history
             self.history.append([src,dest])
 
-            self.tracking_time(start_time,elapsed_time)
-
             # Flip turn to other player
             if self.moves_left < 1:
+                self.tracking_time(start_time,elapsed_time)
                 # print("switch player")
                 self.switch_player_at_turn()
             return True
@@ -442,25 +441,19 @@ class Board(object):
         else:   return False
 
     def tracking_time(self,start_time,elapsed_time = 0):
-        if elapsed_time != 0: # possibility to edit time for loading of game
-            if self.turn == self.playerG:
-                self.elapsed_timeG += int(elapsed_time)
-                self.history[-1].append(int(elapsed_time))
-            elif self.turn == self.playerS:
-                self.elapsed_timeS += elapsed_time
-                self.history[-1].append(int(elapsed_time))
+        if elapsed_time != 0: # possibility to skip edit time for loading of game
             return
         else:
             if self.turn == self.playerG:
                 elapsed_time = self.end_time - start_time
                 self.elapsed_timeG += elapsed_time
-                self.history[-1].append(int(elapsed_time))
-                print("Elapsed Time of Gold: {}".format(self.elapsed_timeG))
+                # self.history[-1].append(int(elapsed_time))
+                print("Elapsed Time of Gold: {} sec".format(round(self.elapsed_timeG,1)))
             elif self.turn == self.playerS:
                 elapsed_time = self.end_time - start_time
                 self.elapsed_timeS += elapsed_time
-                self.history[-1].append(int(elapsed_time))
-                print("Elapsed Time of Silver: {}".format(self.elapsed_timeS))
+                # self.history[-1].append(int(elapsed_time))
+                print("Elapsed Time of Silver: {} sec".format(round(self.elapsed_timeS),1))
         return
 
     def get_time_left(self):
