@@ -145,7 +145,7 @@ class NegaMax(object):
                         if pos[0]+1 <= 10 and pos[1]+1 <= 10 \
                         and state.get_player_at_field([pos[0]+1,pos[1]+1]) == player:
                             flag_covered += 1
-            utility =  number_ships_left - 4*flag_attack - attack + 10 * direct_access + 3 * flag_covered - silver_number_ships_left
+            utility =  number_ships_left - 4*flag_attack - attack + 6 * direct_access + 3 * flag_covered - silver_number_ships_left
             return utility
 
         elif player == 'silver':
@@ -227,5 +227,5 @@ class NegaMax(object):
                                 flag_covered += 1
                     else:
                         k+= 1
-            utility =  number_ships_left + 4*flag_attack + attack - 10 * direct_access - 3 * flag_covered - gold_number_ships_left
+            utility =  number_ships_left + 4*flag_attack + attack - 6 * direct_access - 3 * flag_covered - gold_number_ships_left
             return utility

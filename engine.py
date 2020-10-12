@@ -16,7 +16,7 @@ class Agent(object):
         # Start alpha-beta-algorithm
         agent = NegaMax(board,self.turn)
         value, move_list = agent.get_val(self.turn,depth,-30,30)
-        print("Value of move: {}".format(value))
+        # print("Value of move: {}".format(value))
         src_1 = move_list[0][0]
         dest_1 = move_list[0][1]
         if move_list[1] != []:
