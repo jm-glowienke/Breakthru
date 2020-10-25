@@ -30,9 +30,9 @@ class NegaMax(object):
         childNodes = self.order_moves(childNodes)
         childNodes = tools.remove_double_moves(childNodes)
         for child in childNodes:
-            if time.time() - self.time > 30:
-                print("Search timed out!")
-                return self.score, best_move
+            # if time.time() - self.time > 30:
+            #     print("Search timed out!")
+            #     return self.score, best_move
             src = child[0]
             dest = child[1]
             dest_object = self.state.get_board()[dest[0]][dest[1]]

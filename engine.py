@@ -13,6 +13,7 @@ class Agent(object):
         self.state = None
 
     def next_move_engine(self,board,depth = 1):
+        type2 = None
         # Start alpha-beta-algorithm
         agent = NegaMax(board,self.turn)
         value, move_list = agent.get_val(self.turn,depth,-30,30)
